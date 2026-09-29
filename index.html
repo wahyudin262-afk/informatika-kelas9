@@ -1,816 +1,865 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Situs Pembelajaran Informatika Kelas 9</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Fraunces:opsz,wght@9..144,700&amp;display=swap" rel="stylesheet">
-  
-  <style>
-    :root{--ink:#19324a;--navy:#12355b;--sky:#d9f3ff;--mint:#d9f7e9;--sun:#ffc94a;--coral:#ff775f;--paper:#f7fbff}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:"DM Sans",sans-serif;color:var(--ink);background:var(--paper)}
-    button,input,select,textarea{font:inherit}
-    button{cursor:pointer}
-    button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #ffb000;outline-offset:3px}
-    .app-shell{width:100%;min-height:calc(100 * min(var(--vh, 1vh), 1vh));background:linear-gradient(120deg,#f7fbff 0%,#eef9ff 53%,#fff8df 100%)}
-    .sidebar{background:#12355b;color:#fff}
-    .topic-nav{border-left:4px solid transparent}
-    .topic-nav.active{background:#ffffff20;border-left-color:#ffc94a}
-    .topic-card{transition:transform .2s ease,box-shadow .2s ease}
-    .topic-card:hover{transform:translateY(-4px);box-shadow:0 18px 35px rgba(18,53,91,.12)}
-    .panel{box-shadow:0 12px 35px rgba(26,70,104,.08)}
-    .edit-panel{max-height:calc(100 * min(var(--vh, 1vh), 1vh));overflow:auto}
-    .sim-choice{transition:all .18s ease}
-    .sim-choice.correct{background:#d9f7e9!important;border-color:#1d9b62!important;color:#0b613a}
-    .sim-choice.wrong{background:#ffe2dd!important;border-color:#e65645!important;color:#8d251b}
-    .quiz-option.selected{border-color:#12355b;background:#e4f5ff}
-    .status-dot{animation:pulse 2s infinite}
-    @keyframes pulse{50%{opacity:.45;transform:scale(.8)}}
-    .hero-grid{background-image:linear-gradient(rgba(18,53,91,.8),rgba(18,53,91,.68))}
-    .reveal{animation:rise .45s ease both}
-    @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    .hidden-view{display:none!important}
-    .teacher-only{display:none!important}
-    body.teacher-mode .teacher-only{display:flex!important}
-    body.teacher-mode .teacher-only.block{display:block!important}
-    body.teacher-mode .teacher-only.inline-flex{display:inline-flex!important}
-    body.teacher-mode .student-access{display:none!important}
-    @media(max-width:1023px){.sidebar{position:static}}
-  </style>
-
-  <!-- External Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js" type="text/javascript"></script>
-  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
-  
-  <!-- Firebase SDK (v9 Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informatika Kelas 9 - Portal Pembelajaran Interaktif</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
 </head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
 
-<body style="background: linear-gradient(120deg, rgb(247, 251, 255), rgb(255, 248, 223));">
-  <div class="app-shell">
-   <header class="canva-header sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur" style="background: rgb(255, 255, 255);">
-    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-     <div class="flex min-w-0 items-center gap-3">
-      <div class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#ffc94a] text-[#12355b]">
-       <i data-lucide="monitor-smartphone" aria-hidden="true"></i>
-      </div>
-      <div class="min-w-0">
-       <h1 class="canva-text truncate font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 32px;">Situs Pembelajaran Informatika Kelas 9</h1>
-       <p class="canva-text hidden text-sm text-slate-500 sm:block" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 16px;">Belajar, mencoba, dan berkarya dengan teknologi</p>
-      </div>
-     </div>
-     <div class="flex items-center gap-2">
-      <span id="save-status" class="hidden text-xs font-semibold text-[#197347] sm:inline-flex sm:items-center sm:gap-1"> 
-        <span class="status-dot h-2 w-2 rounded-full bg-[#2aaf70]"></span> 
-        <span id="save-status-text">Memuat konten…</span> 
-      </span> 
-      <span class="canva-tag student-access hidden rounded-full bg-[#d9f7e9] px-3 py-1.5 text-xs font-bold text-[#0e6340] sm:inline-flex" style="background: rgb(217, 247, 233); color: rgb(14, 99, 64); font-weight: 700; font-style: normal; font-size: 16px;">Mode Siswa</span> 
-      <span class="canva-tag teacher-only hidden rounded-full bg-[#fff1cf] px-3 py-1.5 text-xs font-bold text-[#855000]" style="background: rgb(255, 241, 207); color: rgb(133, 80, 0); font-weight: 700; font-style: normal; font-size: 16px;">Mode Pengajar aktif</span> 
-      <button id="teacher-login-button" type="button" class="canva-button student-access inline-flex items-center gap-2 rounded-xl border border-[#12355b] bg-white px-3 py-2 text-sm font-bold text-[#12355b] hover:bg-[#eaf6fd]" style="background: rgb(255, 255, 255); color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 16px;">Masuk sebagai Pengajar</button> 
-      <button id="teacher-tools-button" type="button" class="canva-button teacher-only hidden items-center gap-2 rounded-xl bg-[#12355b] px-3 py-2 text-sm font-bold text-white hover:bg-[#0b2948]" style="background: rgb(18, 53, 91); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 16px;">Kelola konten</button>
-     </div>
-    </div>
-    <div id="teacher-bar" class="teacher-only hidden border-t border-[#e9c96d] bg-[#fff8df]">
-     <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
-      <div class="flex items-center gap-2 text-sm font-semibold text-[#704400]">
-       <i data-lucide="shield-check" class="h-4 w-4" aria-hidden="true"></i> 
-       <span class="canva-text" style="color: rgb(112, 68, 0); font-weight: 600; font-style: normal; font-size: 16px;">Kontrol pengelolaan konten sedang terbuka untuk pengajar.</span>
-      </div>
-      <div class="flex gap-2">
-       <button id="return-student-button" type="button" class="canva-button rounded-lg bg-white px-3 py-1.5 text-sm font-bold text-[#12355b] shadow-sm hover:bg-[#eef8fd]" style="background: rgb(255, 255, 255); color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 16px;">Kembali ke Mode Siswa</button> 
-       <button id="lock-teacher-button" type="button" class="canva-button inline-flex items-center gap-1 rounded-lg bg-[#12355b] px-3 py-1.5 text-sm font-bold text-white hover:bg-[#0b2948]" style="background: rgb(18, 53, 91); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 16px;">Kunci Mode Pengajar</button>
-      </div>
-     </div>
-    </div>
-   </header>
-
-   <div class="mx-auto flex max-w-7xl flex-col lg:flex-row">
-    <aside class="sidebar w-full shrink-0 p-4 lg:sticky lg:top-[73px] lg:h-[calc(100*min(var(--vh,1vh),1vh)-73px)] lg:w-72 lg:overflow-y-auto">
-     <nav aria-label="Navigasi pembelajaran">
-      <button id="dashboard-nav" type="button" class="topic-nav mb-3 flex w-full items-center gap-3 rounded-r-xl px-3 py-3 text-left font-bold hover:bg-white/10"> 
-        <i data-lucide="layout-dashboard" class="h-5 w-5" aria-hidden="true"></i> 
-        <span>Dashboard Belajar</span> 
-      </button>
-      <p class="canva-text mb-2 px-3 text-xs font-bold uppercase tracking-[.16em] text-[#a6d8f0]" style="color: rgb(166, 216, 240); font-weight: 700; font-style: normal; font-size: 16px;">Daftar Topik</p>
-      <div id="topic-nav-list" class="space-y-1"></div>
-     </nav>
-     <div class="mt-6 rounded-2xl bg-white/10 p-4">
-      <p class="canva-text font-bold text-[#ffc94a]" style="color: rgb(255, 201, 74); font-weight: 700; font-style: normal; font-size: 16px;">Tip belajar</p>
-      <p class="canva-text mt-1 text-sm leading-relaxed text-slate-200" style="color: rgb(226, 237, 244); font-weight: 400; font-style: normal; font-size: 16px;">Coba satu aktivitas setiap kali belajar. Tidak harus terburu-buru—yang penting paham.</p>
-     </div>
-    </aside>
-
-    <main class="min-w-0 flex-1 p-4 sm:p-6">
-     <section id="dashboard-view" class="reveal">
-      <div class="canva-banner hero-grid overflow-hidden rounded-[28px] bg-[#12355b]" style="background: rgb(18, 53, 91);">
-       <div class="grid items-stretch lg:grid-cols-[1.1fr_.9fr]">
-        <div class="p-7 sm:p-10">
-         <p class="canva-tag mb-3 inline-block rounded-full bg-[#ffc94a] px-3 py-1 text-sm font-bold text-[#12355b]" style="background: rgb(255, 201, 74); color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 16px;">INFORMATIKA • KELAS 9</p>
-         <h2 class="canva-text max-w-xl font-['Fraunces'] font-bold text-white" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 24px;">Pahami teknologi. Ciptakan solusi.</h2>
-         <p class="canva-text mt-4 max-w-xl leading-relaxed text-[#e4f5ff]" style="color: rgb(228, 245, 255); font-weight: 400; font-style: normal; font-size: 16px;">Jelajahi konsep informatika lewat materi singkat, simulasi, kuis, dan proyek praktik yang seru.</p>
-         <button id="hero-start-button" type="button" class="canva-button mt-6 inline-flex items-center gap-2 rounded-xl bg-[#ffc94a] px-5 py-3 font-bold text-[#12355b] hover:bg-[#ffdc76]" style="background: rgb(255, 201, 74); color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 16px;">Mulai belajar</button>
-        </div>
-        <img loading="lazy" class="canva-image h-56 w-full object-cover lg:h-full" src="https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1280" alt="Siswi belajar menggunakan laptop">
-       </div>
-      </div>
-
-      <section class="mt-6" aria-labelledby="progress-heading">
-       <div class="mb-3 flex items-end justify-between gap-4">
-        <div>
-         <h2 id="progress-heading" class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Progres belajarku</h2>
-         <p class="canva-text mt-1 text-sm text-slate-600" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Setiap langkah kecil akan membantumu menjadi lebih siap menghadapi dunia digital.</p>
-        </div>
-        <span id="progress-percent" class="rounded-full bg-[#d9f7e9] px-3 py-1 text-sm font-bold text-[#0e6340]">0%</span>
-       </div>
-       <div class="grid gap-3 sm:grid-cols-3">
-        <article class="panel rounded-2xl bg-white p-4">
-         <p class="canva-text text-sm text-slate-500" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 16px;">Topik tersedia</p>
-         <p id="topic-count" class="mt-1 text-3xl font-bold text-[#12355b]">0</p>
-        </article>
-        <article class="panel rounded-2xl bg-white p-4">
-         <p class="canva-text text-sm text-slate-500" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 16px;">Topik dijelajahi</p>
-         <p id="completed-count" class="mt-1 text-3xl font-bold text-[#1d9b62]">0</p>
-        </article>
-        <article class="panel rounded-2xl bg-white p-4">
-         <p class="canva-text text-sm text-slate-500" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 16px;">Poin kuis</p>
-         <p id="score-count" class="mt-1 text-3xl font-bold text-[#e18b00]">0</p>
-        </article>
-       </div>
-      </section>
-
-      <section class="mt-8" aria-labelledby="topic-heading">
-       <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-        <div>
-         <h2 id="topic-heading" class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Pilih petualangan belajarmu</h2>
-         <p class="canva-text mt-1 text-slate-600" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Setiap topik memiliki materi, aktivitas interaktif, kuis, dan proyek praktik.</p>
-        </div>
-        <div class="flex w-full gap-2 sm:w-auto">
-         <label class="sr-only" for="topic-search">Cari topik</label>
-         <div class="relative flex-1 sm:w-64">
-          <i data-lucide="search" class="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400"></i> 
-          <input id="topic-search" type="search" class="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm" placeholder="Cari topik atau materi">
-         </div>
-         <button id="clear-search" type="button" class="rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-[#12355b]">Reset</button>
-        </div>
-       </div>
-       <div id="topic-grid" class="mt-5 grid gap-5 md:grid-cols-2"></div>
-       <p id="empty-topics" class="hidden rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-500">Belum ada topik yang cocok.</p>
-      </section>
-     </section>
-
-     <section id="topic-view" class="hidden-view reveal" aria-live="polite">
-      <button id="back-dashboard" type="button" class="mb-4 inline-flex items-center gap-2 text-sm font-bold text-[#12355b] hover:underline"> 
-        <i data-lucide="arrow-left" class="h-4 w-4" aria-hidden="true"></i> Kembali ke dashboard 
-      </button>
-      <div id="topic-detail"></div>
-     </section>
-    </main>
-   </div>
-
-   <!-- Panel Pengelola Mode Pengajar -->
-   <aside id="edit-panel" class="edit-panel hidden fixed inset-y-0 right-0 z-50 w-full max-w-2xl border-l border-slate-200 bg-[#f7fbff] shadow-2xl" aria-label="Panel pengelolaan konten">
-    <div class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white p-5">
-     <div>
-      <p class="canva-text text-xs font-bold uppercase tracking-[.14em] text-[#197347]" style="color: rgb(25, 115, 71); font-weight: 700; font-style: normal; font-size: 16px;">Pengelolaan konten</p>
-      <h2 class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Mode Pengajar</h2>
-     </div>
-     <button id="close-edit-panel" type="button" class="rounded-xl p-2 text-slate-500 hover:bg-slate-100" aria-label="Tutup panel"> <i data-lucide="x"></i> </button>
-    </div>
-    <div class="p-5">
-     <div id="manager-message" class="hidden mb-4 rounded-xl p-3 text-sm" role="status"></div>
-     <form id="content-form" class="panel rounded-2xl bg-white p-5">
-      <h3 id="form-heading" class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 19px;">Tambah konten baru</h3>
-      <input id="record-id" type="hidden">
-      <div class="mt-4 grid gap-4 sm:grid-cols-2">
-       <div>
-        <label class="canva-text mb-1 block text-sm font-bold text-slate-700" for="record-type" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Jenis konten</label> 
-        <select id="record-type" class="w-full rounded-xl border border-slate-200 bg-white p-2.5"> 
-          <option value="topic">Topik</option> 
-          <option value="material">Materi</option> 
-          <option value="video">Video / Tautan</option> 
-          <option value="simulation">Simulasi</option> 
-          <option value="project">Proyek</option> 
-          <option value="quiz">Soal Kuis</option> 
-        </select>
-       </div>
-       <div>
-        <label class="canva-text mb-1 block text-sm font-bold text-slate-700" for="record-topic" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Topik induk</label> 
-        <select id="record-topic" class="w-full rounded-xl border border-slate-200 bg-white p-2.5"></select>
-       </div>
-       <div class="sm:col-span-2">
-        <label class="canva-text mb-1 block text-sm font-bold text-slate-700" for="record-title" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Judul</label> 
-        <input id="record-title" required="" class="w-full rounded-xl border border-slate-200 p-2.5" type="text">
-       </div>
-       <div class="sm:col-span-2">
-        <label class="canva-text mb-1 block text-sm font-bold text-slate-700" for="record-content" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Isi konten (format JSON)</label> 
-        <textarea id="record-content" required="" rows="7" class="w-full rounded-xl border border-slate-200 p-2.5 font-mono text-xs" placeholder='{"summary":"Ringkasan","objective":"Tujuan","time":"20 menit"}'></textarea>
-        <p class="canva-text mt-1 text-xs text-slate-500" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 16px;">Contoh materi: {"body":"Tulis isi materi di sini"}. Contoh kuis: {"question":"...","options":["A","B"],"answer":"A"}.</p>
-       </div>
-       <div>
-        <label class="canva-text mb-1 block text-sm font-bold text-slate-700" for="record-order" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Urutan tampil</label> 
-        <input id="record-order" min="1" value="1" class="w-full rounded-xl border border-slate-200 p-2.5" type="number">
-       </div>
-       <label class="mt-6 flex items-center gap-2 text-sm font-bold text-slate-700"> 
-        <input id="record-published" type="checkbox" class="h-4 w-4 accent-[#12355b]"> 
-        <span class="canva-text" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Publikasikan untuk siswa</span> 
-       </label>
-      </div>
-      <div class="mt-5 flex flex-wrap gap-2">
-       <button id="save-record" type="submit" class="canva-button rounded-xl bg-[#12355b] px-4 py-2.5 font-bold text-white hover:bg-[#0b2948]">Simpan perubahan</button> 
-       <button id="cancel-edit" type="button" class="canva-button rounded-xl bg-[#e7f1f8] px-4 py-2.5 font-bold text-[#12355b] hover:bg-[#d5e8f3]">Batal / konten baru</button>
-      </div>
-     </form>
-     <div class="mt-6 flex items-center justify-between">
-      <h3 class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 19px;">Daftar seluruh konten</h3>
-      <button id="reset-content" type="button" class="canva-button rounded-xl border border-[#e18b00] bg-[#fff8df] px-3 py-2 text-sm font-bold text-[#9a5d00]">Reset contoh konten</button>
-     </div>
-     <div id="manage-list" class="mt-3 space-y-2"></div>
-    </div>
-   </aside>
-
-   <!-- Modals -->
-   <div id="teacher-access-modal" class="hidden fixed inset-0 z-[70] grid place-items-center bg-[#12355b]/60 p-4" role="dialog" aria-modal="true">
-    <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-     <div class="grid h-11 w-11 place-items-center rounded-2xl bg-[#d9f3ff] text-[#12355b]">
-      <i data-lucide="shield-check" aria-hidden="true"></i>
-     </div>
-     <h2 class="canva-text mt-4 font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Akses Mode Pengajar</h2>
-     <p class="canva-text mt-2 leading-relaxed text-slate-600" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Masukkan kode akses pribadi untuk membuka kontrol pengelolaan konten.</p>
-     <form id="teacher-access-form" class="mt-5">
-      <label class="canva-text mb-1.5 block text-sm font-bold text-slate-700" for="teacher-code" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Kode akses pengajar</label> 
-      <input id="teacher-code" type="password" autocomplete="off" required="" class="w-full rounded-xl border border-slate-300 px-3 py-2.5" placeholder="Masukkan kode akses">
-      <p id="teacher-code-error" class="hidden mt-2 text-sm font-semibold text-[#b12f25]" role="alert">Kode akses belum sesuai. Coba lagi.</p>
-      <div class="mt-5 flex justify-end gap-2">
-       <button id="teacher-cancel-button" type="button" class="canva-button rounded-xl bg-[#e7f1f8] px-4 py-2.5 font-bold text-[#12355b]">Batal</button> 
-       <button type="submit" class="canva-button rounded-xl bg-[#12355b] px-4 py-2.5 font-bold text-white hover:bg-[#0b2948]">Lanjutkan</button>
-      </div>
-     </form>
-    </div>
-   </div>
-
-   <div id="teacher-confirm-modal" class="hidden fixed inset-0 z-[75] grid place-items-center bg-[#12355b]/60 p-4" role="dialog" aria-modal="true">
-    <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-     <h2 class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Aktifkan Mode Pengajar?</h2>
-     <p class="canva-text mt-2 leading-relaxed text-slate-600" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Kontrol tambah, ubah, hapus, dan pengaturan konten akan ditampilkan.</p>
-     <div class="mt-5 flex justify-end gap-2">
-      <button id="cancel-teacher-confirm" type="button" class="canva-button rounded-xl bg-[#e7f1f8] px-4 py-2.5 font-bold text-[#12355b]">Tetap di Mode Siswa</button> 
-      <button id="activate-teacher-mode" type="button" class="canva-button rounded-xl bg-[#12355b] px-4 py-2.5 font-bold text-white">Aktifkan Mode Pengajar</button>
-     </div>
-    </div>
-   </div>
-
-   <div id="delete-modal" class="hidden fixed inset-0 z-[80] grid place-items-center bg-[#12355b]/50 p-4" role="dialog" aria-modal="true">
-    <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-     <h2 class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Hapus konten ini?</h2>
-     <p class="canva-text mt-2 text-slate-600" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Tindakan ini akan menghapus konten dari daftar pembelajaran.</p>
-     <div class="mt-5 flex justify-end gap-2">
-      <button id="cancel-delete" type="button" class="canva-button rounded-xl bg-[#e7f1f8] px-4 py-2 font-bold text-[#12355b]">Batal</button> 
-      <button id="confirm-delete" type="button" class="canva-button rounded-xl bg-[#d94738] px-4 py-2 font-bold text-white">Ya, hapus</button>
-     </div>
-    </div>
-   </div>
-  </div>
-
-  <script>
-    // ----------------------------------------------------
-    // KONFIGURASI FIREBASE (GANTI DENGAN KUNCI ANDA SAMAKAN DENGAN BAGIAN 1)
-    // ----------------------------------------------------
-const firebaseConfig = {
-      apiKey: "AIzaSyCcteYGlVMoWO2C4IWniu7rjghXSPoAXg",
-      authDomain: "situs-informatika-9.firebaseapp.com",
-      databaseURL: "https://situs-informatika-9-default-rtdb.firebaseio.com",
-      projectId: "situs-informatika-9",
-      storageBucket: "situs-informatika-9.firebasestorage.app",
-      messagingSenderId: "475564592954",
-      appId: "1:475564592954:web:20a5b3fe52f20293590a03",
-      measurementId: "G-6H608ZP2N6"
-    };
-
-    // Inisialisasi Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // Variable global
-    let backendRecords = [];
-    let selectedTopicId = null;
-    let deleteTarget = null;
-    let quizScore = 0;
-    let completed = new Set();
-    let teacherMode = false;
-    let initialTimer;
-
-    const $ = (selector) => document.querySelector(selector);
-    const teacherAccessCode = "199306222025211016";
-    
-    const iconMap = {
-      "Algoritma dan Pemrograman": "code-2",
-      "Jaringan Komputer dan Internet": "network",
-      "Data dan Dampak Sosial Informatika": "shield-check",
-      "Sistem Komputer": "cpu"
-    };
-    
-    const images = {
-      "Algoritma dan Pemrograman": "https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "Jaringan Komputer dan Internet": "https://images.pexels.com/photos/2881229/pexels-photo-2881229.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "Data dan Dampak Sosial Informatika": "https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=800",
-      "Sistem Komputer": "https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg?auto=compress&cs=tinysrgb&w=800"
-    };
-
-    function parse(value) {
-      try { return JSON.parse(value || "{}"); } catch { return {}; }
-    }
-
-    function escapeHTML(value) {
-      return String(value || "").replace(/[&<>"']/g, (character) => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
-      }[character]));
-    }
-
-    function topics() {
-      return backendRecords
-        .filter(record => record.type === "topic" && record.published)
-        .sort((a, b) => a.order_index - b.order_index);
-    }
-
-    function children(topicId, type) {
-      return backendRecords
-        .filter(record => record.topic_id === topicId && record.type === type && record.published)
-        .sort((a, b) => a.order_index - b.order_index);
-    }
-
-    function setSave(text) {
-      const el = $("#save-status-text");
-      if (el) el.textContent = text;
-    }
-
-    function status(text, kind = "ok") {
-      const element = $("#manager-message");
-      element.textContent = text;
-      element.className = "mb-4 rounded-xl p-3 text-sm " + (kind === "error" ? "bg-red-100 text-red-800" : "bg-emerald-100 text-emerald-800");
-    }
-
-    function renderDashboard() {
-      const list = topics();
-      const search = $("#topic-search").value.toLowerCase();
-
-      $("#topic-count").textContent = list.length;
-      $("#completed-count").textContent = completed.size;
-      $("#score-count").textContent = quizScore;
-      $("#progress-percent").textContent = (list.length ? Math.round((completed.size / list.length) * 100) : 0) + "%";
-
-      const grid = $("#topic-grid");
-      const nav = $("#topic-nav-list");
-      grid.innerHTML = "";
-      nav.innerHTML = "";
-
-      list.forEach(topic => {
-        const content = parse(topic.content);
-        const matches = (topic.title + " " + (content.summary || "") + " " + (content.objective || "")).toLowerCase().includes(search);
-
-        const navButton = document.createElement("button");
-        navButton.type = "button";
-        navButton.className = "topic-nav flex w-full items-center gap-3 rounded-r-xl px-3 py-2.5 text-left text-sm hover:bg-white/10";
-        navButton.innerHTML = `<i data-lucide="${iconMap[topic.title] || "book-open"}" class="h-4 w-4 text-[#ffc94a]"></i><span>${escapeHTML(topic.title)}</span>`;
-        navButton.onclick = () => openTopic(topic.topic_id);
-        nav.appendChild(navButton);
-
-        if (!matches) return;
-
-        const card = document.createElement("article");
-        const photo = images[topic.title] || images["Algoritma dan Pemrograman"];
-        card.className = "topic-card panel overflow-hidden rounded-2xl bg-white";
-        card.innerHTML = `
-          <div class="h-28 bg-cover bg-center" style="background-image:linear-gradient(90deg,rgba(18,53,91,.26),rgba(18,53,91,.05)),url('${photo}')"></div>
-          <div class="p-5">
-            <div class="mb-3 flex items-start justify-between gap-3">
-              <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#d9f3ff] text-[#12355b]"><i data-lucide="${iconMap[topic.title] || "book-open"}" class="h-5 w-5"></i></span>
-              <span class="rounded-full bg-[#fff8df] px-2 py-1 text-xs font-bold text-[#9a5d00]">${escapeHTML(content.time || "60 menit")}</span>
+    <!-- HEADER / NAVBAR -->
+    <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button id="toggle-sidebar" class="md:hidden text-white hover:text-indigo-200 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="bg-blue-500 p-2 rounded-lg text-white font-bold">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight">Informatika IX</h1>
+                        <p class="text-xs text-indigo-200 hidden sm:block">Portal Pembelajaran Interaktif SMP</p>
+                    </div>
+                </div>
             </div>
-            <h3 class="text-lg font-bold text-[#12355b]">${escapeHTML(topic.title)}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-slate-600">${escapeHTML(content.summary || "")}</p>
-            <div class="mt-4 rounded-xl bg-[#f3f9fd] p-3 text-sm"><strong>Tujuan:</strong> ${escapeHTML(content.objective || "Mempelajari konsep utama.")}</div>
-            <button type="button" class="start-topic mt-4 w-full rounded-xl bg-[#12355b] px-4 py-2.5 font-bold text-white hover:bg-[#0b2948]" data-id="${escapeHTML(topic.topic_id)}">Mulai belajar <span aria-hidden="true">→</span></button>
-          </div>`;
-        grid.appendChild(card);
-      });
 
-      $("#empty-topics").classList.toggle("hidden", grid.children.length > 0);
-      grid.querySelectorAll(".start-topic").forEach(button => button.onclick = () => openTopic(button.dataset.id));
-      if (window.lucide) lucide.createIcons();
-    }
+            <!-- Global Status & Mode Switcher -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden lg:flex items-center space-x-2 bg-indigo-950/60 px-3 py-1.5 rounded-full text-xs">
+                    <i class="fa-solid fa-chart-line text-emerald-400"></i>
+                    <span>Progres:</span>
+                    <div class="w-24 bg-indigo-800 rounded-full h-2 overflow-hidden">
+                        <div id="global-progress-bar" class="bg-emerald-400 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                    <span id="global-progress-text" class="font-bold text-emerald-400">0%</span>
+                </div>
 
-    function simulationHTML(record) {
-      const content = parse(record.content);
-      const items = content.items || [];
-      return `<article class="panel rounded-2xl bg-[#eaf8ff] p-6">
-        <div class="flex items-center gap-2"><i data-lucide="sparkles" class="text-[#147aa6]"></i><h3 class="text-xl font-bold text-[#12355b]">Simulasi: ${escapeHTML(record.title)}</h3></div>
-        <p class="mt-2 text-slate-700">${escapeHTML(content.instruction || "Pilih jawaban yang paling tepat.")}</p>
-        <div class="sim-area mt-4 grid gap-2" data-answer="${escapeHTML(content.answer || "")}">
-          ${items.map(item => `<button type="button" class="sim-choice rounded-xl border-2 border-[#b8dced] bg-white px-4 py-3 text-left font-semibold text-[#12355b]" data-value="${escapeHTML(item)}">${escapeHTML(item)}</button>`).join("")}
+                <!-- Mode Indicator Badge -->
+                <div id="mode-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <span id="mode-badge-text">Mode Siswa</span>
+                </div>
+
+                <!-- Mode Switch Button -->
+                <button id="btn-toggle-mode" onclick="toggleRoleMode()" class="bg-indigo-800 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg transition font-medium flex items-center gap-2 border border-indigo-700">
+                    <i class="fa-solid fa-right-left"></i>
+                    <span class="hidden sm:inline">Ganti Mode</span>
+                </button>
+            </div>
         </div>
-        <p class="sim-feedback mt-3 min-h-5 text-sm font-bold"></p>
-      </article>`;
-    }
+    </header>
 
-    function quizHTML(record) {
-      const content = parse(record.content);
-      const options = content.options || [];
-      return `<article class="panel rounded-2xl bg-white p-6">
-        <div class="flex items-center gap-2"><i data-lucide="circle-help" class="text-[#e18b00]"></i><h3 class="text-xl font-bold text-[#12355b]">Kuis: ${escapeHTML(record.title)}</h3></div>
-        <p class="mt-3 font-semibold text-slate-800">${escapeHTML(content.question || "")}</p>
-        <div class="quiz-area mt-4 grid gap-2" data-answer="${escapeHTML(content.answer || "")}">
-          ${options.map(option => `<button type="button" class="quiz-option rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-left text-slate-700 hover:border-[#12355b]" data-value="${escapeHTML(option)}">${escapeHTML(option)}</button>`).join("")}
+    <!-- MAIN CONTAINER -->
+    <div class="flex-1 flex max-w-7xl w-full mx-auto">
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 fixed md:static inset-y-0 left-0 z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col justify-between shadow-sm">
+            <div class="p-4 custom-scrollbar overflow-y-auto flex-1">
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-2">Menu Pembelajaran</div>
+                <nav class="space-y-1">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-blue-600 bg-blue-50 border-l-4 border-blue-600">
+                        <i class="fa-solid fa-house w-5 text-center"></i>
+                        <span>Dashboard</span>
+                    </button>
+                    
+                    <button onclick="switchTab('modul1')" id="nav-modul1" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent">
+                        <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                        <span>1. Analisis Data</span>
+                    </button>
+
+                    <button onclick="switchTab('modul2')" id="nav-modul2" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent">
+                        <i class="fa-solid fa-brain w-5 text-center"></i>
+                        <span>2. Berpikir Komputasional</span>
+                    </button>
+
+                    <button onclick="switchTab('modul3')" id="nav-modul3" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent">
+                        <i class="fa-solid fa-network-wired w-5 text-center"></i>
+                        <span>3. Jaringan & Keamanan</span>
+                    </button>
+
+                    <button onclick="switchTab('modul4')" id="nav-modul4" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent">
+                        <i class="fa-solid fa-code w-5 text-center"></i>
+                        <span>4. Pemrograman</span>
+                    </button>
+
+                    <div class="pt-4 pb-1">
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 px-2">Materi Media & Evaluasi</div>
+                    </div>
+
+                    <button onclick="switchTab('video-learning')" id="nav-video-learning" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent">
+                        <i class="fa-solid fa-circle-play w-5 text-center text-red-500"></i>
+                        <span>Video Pembelajaran</span>
+                    </button>
+
+                    <button onclick="switchTab('gform-practice')" id="nav-gform-practice" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent">
+                        <i class="fa-solid fa-file-pen w-5 text-center text-purple-600"></i>
+                        <span>Latihan Google Form</span>
+                    </button>
+
+                    <div id="teacher-menu-section" class="hidden pt-4 pb-1">
+                        <div class="text-xs font-semibold text-amber-600 uppercase tracking-wider mb-2 px-2 flex items-center gap-1">
+                            <i class="fa-solid fa-user-shield"></i> Khusus Pengajar
+                        </div>
+                        <button onclick="switchTab('teacher-settings')" id="nav-teacher-settings" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-amber-50 hover:text-amber-800 border-l-4 border-transparent">
+                            <i class="fa-solid fa-sliders w-5 text-center text-amber-600"></i>
+                            <span>Pengaturan Guru</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Footer Sidebar -->
+            <div class="p-4 border-t border-slate-200 bg-slate-50 text-xs text-slate-500">
+                <p class="font-medium text-slate-700">Kurikulum Merdeka 2026</p>
+                <p>Informatika Kelas IX SMP/MTs</p>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 custom-scrollbar overflow-y-auto">
+
+            <!-- TAB 0: DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content space-y-6">
+                <div class="bg-gradient-to-r from-indigo-800 to-blue-600 rounded-2xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
+                    <div class="relative z-10 max-w-2xl">
+                        <span class="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full inline-block mb-3 backdrop-blur-sm">Selamat Datang!</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Portal Pembelajaran Informatika Kelas 9</h2>
+                        <p class="mt-2 text-indigo-100 text-sm sm:text-base">Eksplorasi konsep analisis data, berpikir komputasional, jaringan komputer, media video, hingga pemrograman secara interaktif.</p>
+                    </div>
+                    <i class="fa-solid fa-laptop-code absolute -right-6 -bottom-6 text-9xl text-white/10 pointer-events-none"></i>
+                </div>
+
+                <!-- Modul Overview Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div onclick="switchTab('modul1')" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 group-hover:text-blue-600 transition">Modul 1</h3>
+                        <p class="text-xs text-slate-500 mt-1">Analisis Data & Chart</p>
+                    </div>
+
+                    <div onclick="switchTab('modul2')" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group">
+                        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 group-hover:text-emerald-600 transition">Modul 2</h3>
+                        <p class="text-xs text-slate-500 mt-1">Berpikir Komputasional</p>
+                    </div>
+
+                    <div onclick="switchTab('modul3')" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group">
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-network-wired"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 group-hover:text-purple-600 transition">Modul 3</h3>
+                        <p class="text-xs text-slate-500 mt-1">Jaringan & Keamanan</p>
+                    </div>
+
+                    <div onclick="switchTab('modul4')" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group">
+                        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 group-hover:text-amber-600 transition">Modul 4</h3>
+                        <p class="text-xs text-slate-500 mt-1">Algoritma Pemrograman</p>
+                    </div>
+                </div>
+
+                <!-- Shortcuts Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Video Media Shortcut -->
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-5 flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center text-xl flex-shrink-0">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm">Video Pembelajaran</h3>
+                                <p class="text-xs text-slate-600">Saksikan video tutorial penjelas materi bab ini.</p>
+                            </div>
+                        </div>
+                        <button onclick="switchTab('video-learning')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition whitespace-nowrap">
+                            Tonton Video
+                        </button>
+                    </div>
+
+                    <!-- Google Form Practice Shortcut -->
+                    <div class="bg-purple-50 border border-purple-200 rounded-xl p-5 flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-purple-600 text-white rounded-lg flex items-center justify-center text-xl flex-shrink-0">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-sm">Latihan Online</h3>
+                                <p class="text-xs text-slate-600">Kerjakan soal latihan resmi dari guru.</p>
+                            </div>
+                        </div>
+                        <button onclick="switchTab('gform-practice')" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition whitespace-nowrap">
+                            Mulai Latihan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 1: MODUL 1 - ANALISIS DATA -->
+            <div id="tab-modul1" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Modul Pembelajaran 1</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Analisis Data & Visualisasi Diagram</h2>
+                    <p class="text-sm text-slate-500 mt-1">Memahami pemrosesan data mentah, penggunaan perkakas lembar kerja, serta pembuatannya dalam bentuk diagram visual.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-database text-blue-600"></i>
+                        1. Data Mentah vs Data Terstruktur
+                    </h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Data mentah (*raw data*) adalah kumpulan fakta atau angka yang belum diolah sehingga sulit dibaca. Agar data dapat dianalisis, kita merapikannya menjadi **Data Terstruktur** dalam bentuk tabel berbaris dan berkolom.
+                    </p>
+                </div>
+
+                <!-- Interactive Canvas Section -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-table text-emerald-600"></i>
+                        2. Editor Tabel & Generator Diagram
+                    </h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border border-slate-200 rounded-lg overflow-hidden">
+                            <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3">Kategori / Item</th>
+                                    <th class="p-3">Nilai / Jumlah</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="chart-data-tbody" class="divide-y divide-slate-200"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="addTableRow()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-3 py-2 rounded-lg transition font-medium">
+                            <i class="fa-solid fa-plus mr-1"></i> Tambah Baris
+                        </button>
+                        <button onclick="renderCanvasChart()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2 rounded-lg transition font-medium">
+                            <i class="fa-solid fa-rotate mr-1"></i> Perbarui Diagram
+                        </button>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                            <label class="text-sm font-semibold text-slate-700">Tipe Visualisasi Chart:</label>
+                            <select id="chart-type-select" onchange="renderCanvasChart()" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-medium">
+                                <option value="bar">Diagram Batang (Bar Chart)</option>
+                                <option value="pie">Diagram Lingkaran (Pie Chart)</option>
+                                <option value="line">Diagram Garis (Line Chart)</option>
+                            </select>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-center">
+                            <canvas id="dataChartCanvas" width="500" height="280" class="max-w-full h-auto bg-white rounded shadow-sm border border-slate-200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: MODUL 2 -->
+            <div id="tab-modul2" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Modul Pembelajaran 2</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Berpikir Komputasional</h2>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-lg">Simulasi Grid Navigasi Algoritma</h3>
+                    <div class="flex flex-col items-center justify-center p-4 bg-slate-100 rounded-lg">
+                        <div id="grid-container" class="grid grid-cols-4 gap-2 w-64 h-64 bg-white p-2 rounded border border-slate-300"></div>
+                        <div class="flex gap-2 mt-4">
+                            <button onclick="moveRobot('up')" class="bg-slate-700 text-white text-xs px-3 py-1.5 rounded"><i class="fa-solid fa-arrow-up"></i> Atas</button>
+                            <button onclick="moveRobot('down')" class="bg-slate-700 text-white text-xs px-3 py-1.5 rounded"><i class="fa-solid fa-arrow-down"></i> Bawah</button>
+                            <button onclick="moveRobot('left')" class="bg-slate-700 text-white text-xs px-3 py-1.5 rounded"><i class="fa-solid fa-arrow-left"></i> Kiri</button>
+                            <button onclick="moveRobot('right')" class="bg-slate-700 text-white text-xs px-3 py-1.5 rounded"><i class="fa-solid fa-arrow-right"></i> Kanan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: MODUL 3 -->
+            <div id="tab-modul3" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <span class="text-xs font-semibold text-purple-600 uppercase tracking-wider">Modul Pembelajaran 3</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Jaringan Komputer & Keamanan Data</h2>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-lg">Simulasi Enkripsi (Caesar Cipher)</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-semibold text-slate-700">Teks Asli (Plaintext):</label>
+                            <input id="cipher-input" type="text" value="INFORMATIKA" oninput="updateCipher()" class="w-full mt-1 border border-slate-300 rounded px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-700">Hasil Enkripsi (Ciphertext):</label>
+                            <input id="cipher-output" type="text" readonly class="w-full mt-1 bg-slate-100 border border-slate-300 rounded px-3 py-2 text-sm font-mono font-bold text-indigo-600">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: MODUL 4 -->
+            <div id="tab-modul4" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Modul Pembelajaran 4</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Algoritma & Pemrograman</h2>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-lg">Simulasi Logika Nilai Siswa (If-Else)</h3>
+                    <div class="flex items-center gap-3">
+                        <input id="score-input" type="number" min="0" max="100" value="78" class="border border-slate-300 rounded px-3 py-1.5 text-sm w-24">
+                        <button onclick="checkScoreLogic()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-4 py-2 rounded">Cek Kelulusan</button>
+                    </div>
+                    <div id="score-result" class="p-3 bg-slate-50 rounded text-sm font-semibold text-slate-700">Hasil: Masukkan nilai.</div>
+                </div>
+            </div>
+
+            <!-- TAB: VIDEO PEMBELAJARAN (Embedded Video Player) -->
+            <div id="tab-video-learning" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <span class="text-xs font-semibold text-red-600 uppercase tracking-wider">Media Pembelajaran Visual</span>
+                    <h2 id="video-display-title" class="text-2xl font-bold text-slate-900 mt-1">Video Tutorial Informatika</h2>
+                    <p class="text-sm text-slate-500 mt-1">Simak materi penjelasan video di bawah ini untuk memperdalam pemahaman konsep.</p>
+                </div>
+
+                <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <!-- Embedded Video Container -->
+                    <div id="video-frame-container" class="relative w-full pb-[56.25%] h-0 rounded-xl overflow-hidden bg-black hidden shadow-md">
+                        <iframe id="video-iframe" class="absolute top-0 left-0 w-full h-full border-0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                    </div>
+
+                    <!-- Placeholder Video (When no video link configured) -->
+                    <div id="video-placeholder" class="text-center p-8 max-w-md mx-auto">
+                        <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+                            <i class="fa-solid fa-video-slash"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Belum Ada Video Pembelajaran</h3>
+                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                            Materi video pembelajaran belum disematkan oleh guru. Jika Anda pengajar, masuk ke <span class="font-semibold text-amber-700">Mode Pengajar</span> lalu masukkan tautan YouTube atau Google Drive pada menu Pengaturan Guru.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: LATIHAN GOOGLE FORM -->
+            <div id="tab-gform-practice" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-semibold text-purple-600 uppercase tracking-wider">Lembar Evaluasi Siswa</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">Latihan Soal Online</h2>
+                        <p class="text-sm text-slate-500 mt-1">Silakan selesaikan tugas/latihan yang dihubungkan melalui Google Form berikut.</p>
+                    </div>
+                    <div id="gform-external-link-btn" class="hidden">
+                        <a id="gform-direct-url" href="#" target="_blank" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs px-4 py-2 rounded-lg font-medium transition">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka di Tab Baru
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm min-h-[500px] flex flex-col items-center justify-center">
+                    <div id="gform-frame-container" class="w-full h-full min-h-[600px] hidden">
+                        <iframe id="gform-iframe" src="" class="w-full h-[650px] border-0 rounded-lg">Loading...</iframe>
+                    </div>
+
+                    <div id="gform-placeholder" class="text-center p-8 max-w-md">
+                        <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+                            <i class="fa-solid fa-link-slash"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Belum Ada Tautan Google Form</h3>
+                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                            Bahan latihan belum diset. Guru dapat menambahkan tautan pada menu Pengaturan Guru.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: PENGATURAN GURU -->
+            <div id="tab-teacher-settings" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Panel Pengelola</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Pengaturan & Konfigurasi Pengajar</h2>
+                    <p class="text-sm text-slate-500 mt-1">Kelola tautan media video, Google Form, keamanan PIN, dan reset data.</p>
+                </div>
+
+                <!-- 1. Video Learning Config (YouTube / Google Drive) -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-film text-red-600"></i>
+                        Konfigurasi Video Pembelajaran (YouTube / Google Drive)
+                    </h3>
+                    <p class="text-xs text-slate-600">
+                        Masukkan tautan video dari <strong>YouTube</strong> (contoh: <code>https://www.youtube.com/watch?v=...</code>) atau dari <strong>Google Drive</strong> (contoh: <code>https://drive.google.com/file/d/.../view</code>).
+                    </p>
+
+                    <div class="space-y-3 pt-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Video / Topik:</label>
+                            <input id="input-video-title" type="text" placeholder="Contoh: Video Penjelasan Analisis Data Bab 1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan URL Video (YouTube / Drive):</label>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <input id="input-video-url" type="url" placeholder="Paste link YouTube / Google Drive di sini" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                                <button onclick="saveVideoUrl()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
+                                    <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Video
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Google Form Config -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        <i class="fa-brands fa-google text-purple-600"></i>
+                        Konfigurasi Link Google Form Latihan Siswa
+                    </h3>
+
+                    <div class="space-y-3 pt-2">
+                        <label class="block text-xs font-semibold text-slate-700">Tautan Google Form (URL):</label>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input id="input-gform-url" type="url" placeholder="https://docs.google.com/forms/d/e/.../viewform" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                            <button onclick="saveGoogleFormUrl()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
+                                <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Link Form
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Security Config (Change PIN) -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-key text-amber-600"></i>
+                        Ubah PIN Keamanan Pengajar
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">PIN Baru:</label>
+                            <input id="input-new-pin" type="password" placeholder="Masukkan PIN baru" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Konfirmasi PIN Baru:</label>
+                            <input id="input-confirm-pin" type="password" placeholder="Ulangi PIN baru" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500">
+                        </div>
+                    </div>
+                    <button onclick="saveNewPin()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-5 py-2 rounded-lg transition">
+                        Perbarui PIN Rahasia
+                    </button>
+                </div>
+
+                <!-- 4. Reset System Data -->
+                <div class="bg-white p-6 rounded-xl border border-red-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-red-700 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Reset Data Progres Pembelajaran
+                    </h3>
+                    <button onclick="resetAllData()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">
+                        Reset Seluruh Data
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- PIN MODAL AUTHENTICATION -->
+    <div id="pin-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl border border-slate-100">
+            <div class="text-center space-y-3">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mx-auto">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 text-lg">Verifikasi Mode Pengajar</h3>
+                <p class="text-xs text-slate-500">Masukkan PIN autentikasi rahasia Anda untuk beralih mode.</p>
+            </div>
+
+            <div class="mt-5 space-y-4">
+                <input id="pin-input" type="password" placeholder="••••" maxlength="10" class="w-full text-center text-2xl tracking-widest font-mono border border-slate-300 rounded-xl py-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <p id="pin-error-msg" class="text-xs text-red-500 text-center hidden font-medium">PIN tidak sesuai.</p>
+
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <button onclick="closePinModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 rounded-xl text-xs transition">Batal</button>
+                    <button onclick="verifyTeacherPin()" class="w-full bg-indigo-800 hover:bg-indigo-900 text-white font-medium py-2.5 rounded-xl text-xs transition">Akses Guru</button>
+                </div>
+            </div>
         </div>
-        <p class="quiz-feedback mt-3 min-h-5 text-sm font-bold"></p>
-      </article>`;
-    }
+    </div>
 
-    function projectHTML(record) {
-      const content = parse(record.content);
-      const steps = content.steps || [];
-      return `<article class="panel rounded-2xl bg-[#f5efff] p-6">
-        <div class="flex items-center gap-2"><i data-lucide="folder-kanban" class="text-[#6943a5]"></i><h3 class="text-xl font-bold text-[#12355b]">Proyek Praktik: ${escapeHTML(record.title)}</h3></div>
-        <p class="mt-2 text-slate-700">${escapeHTML(content.instruction || "")}</p>
-        <div class="mt-4 space-y-2">
-          ${steps.map(step => `<label class="flex items-start gap-3 rounded-xl bg-white p-3"><input type="checkbox" class="project-check mt-1 h-4 w-4 accent-[#6943a5]"><span>${escapeHTML(step)}</span></label>`).join("")}
-        </div>
-        <label class="mt-4 block text-sm font-bold text-[#12355b]" for="notes-${escapeHTML(record.topic_id)}">Catatan belajarku</label>
-        <textarea id="notes-${escapeHTML(record.topic_id)}" class="mt-1 w-full rounded-xl border border-[#d6c8f2] bg-white p-3" rows="3" placeholder="Tulis ide, hasil pengamatan, atau pertanyaanmu di sini…"></textarea>
-      </article>`;
-    }
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let isTeacherMode = false;
+        let chartData = [
+            { label: 'Januari', value: 45 },
+            { label: 'Februari', value: 70 },
+            { label: 'Maret', value: 85 }
+        ];
+        let robotPos = { x: 0, y: 0 };
 
-    function openTopic(topicId) {
-      selectedTopicId = topicId;
-      const topic = topics().find(record => record.topic_id === topicId);
-      if (!topic) return;
-
-      const content = parse(topic.content);
-      const materials = children(topicId, "material");
-      const videos = children(topicId, "video");
-      const simulations = children(topicId, "simulation");
-      const quizzes = children(topicId, "quiz");
-      const projects = children(topicId, "project");
-
-      $("#dashboard-view").classList.add("hidden-view");
-      $("#topic-view").classList.remove("hidden-view");
-
-      let html = `<div class="overflow-hidden rounded-[28px] bg-[#12355b] p-6 text-white sm:p-8">
-        <p class="text-sm font-bold uppercase tracking-[.16em] text-[#ffc94a]">Topik pembelajaran</p>
-        <h2 class="mt-2 font-['Fraunces'] text-3xl font-bold">${escapeHTML(topic.title)}</h2>
-        <p class="mt-3 max-w-3xl text-[#d9f3ff]">${escapeHTML(content.summary || "")}</p>
-        <div class="mt-5 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm">🎯 ${escapeHTML(content.objective || "")}</div>
-      </div><div class="mt-6 grid gap-5">`;
-
-      materials.forEach(record => {
-        const item = parse(record.content);
-        html += `<article class="panel rounded-2xl bg-white p-6">
-          <div class="flex gap-3">
-            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#d9f7e9] text-[#0e6340]"><i data-lucide="book-open"></i></span>
-            <div><h3 class="text-xl font-bold text-[#12355b]">${escapeHTML(record.title)}</h3><p class="mt-2 whitespace-pre-line leading-relaxed text-slate-700">${escapeHTML(item.body || item.summary || "")}</p></div>
-          </div>
-        </article>`;
-      });
-
-      videos.forEach(record => {
-        const item = parse(record.content);
-        html += `<article class="panel rounded-2xl bg-[#fff8df] p-5">
-          <h3 class="font-bold text-[#12355b]">🎬 ${escapeHTML(record.title)}</h3>
-          <p class="mt-1 text-sm text-slate-600">${escapeHTML(item.description || "Pelajari melalui materi visual berikut.")}</p>
-          ${item.url ? `<a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex rounded-xl bg-[#e18b00] px-4 py-2 font-bold text-white">Buka video / media ↗</a>` : `<p class="mt-3 text-sm italic text-slate-500">Tautan belum ditambahkan oleh pengelola.</p>`}
-        </article>`;
-      });
-
-      simulations.forEach(record => html += simulationHTML(record));
-      quizzes.forEach(record => html += quizHTML(record));
-      projects.forEach(record => html += projectHTML(record));
-      html += "</div>";
-
-      $("#topic-detail").innerHTML = html;
-      bindDetailInteractions();
-      if (window.lucide) lucide.createIcons();
-    }
-
-    function bindDetailInteractions() {
-      document.querySelectorAll(".sim-area").forEach(area => {
-        area.querySelectorAll("button").forEach(button => {
-          button.onclick = () => {
-            const correct = button.dataset.value === area.dataset.answer;
-            area.querySelectorAll("button").forEach(item => item.disabled = true);
-            button.classList.add(correct ? "correct" : "wrong");
-            area.parentElement.querySelector(".sim-feedback").textContent = correct ? "Bagus! Jawabanmu tepat." : "Belum tepat. Coba baca kembali materi dan ulangi nanti.";
-          };
+        document.addEventListener('DOMContentLoaded', () => {
+            initTableData();
+            renderCanvasChart();
+            renderGrid();
+            loadGoogleFormUrl();
+            loadVideoUrl();
+            updateProgress();
         });
-      });
 
-      document.querySelectorAll(".quiz-area").forEach(area => {
-        area.querySelectorAll("button").forEach(button => {
-          button.onclick = () => {
-            if (area.dataset.done) return;
-            area.dataset.done = "1";
-            const correct = button.dataset.value === area.dataset.answer;
-            button.classList.add(correct ? "correct" : "wrong");
-            area.querySelectorAll("button").forEach(item => item.disabled = true);
-            area.parentElement.querySelector(".quiz-feedback").textContent = correct ? "✅ Tepat! Kamu memperoleh 10 poin." : "💡 Belum tepat. Pelajari materinya, lalu lanjut ke aktivitas berikutnya.";
-            if (correct) {
-              quizScore += 10;
-              completed.add(selectedTopicId);
-              renderDashboard();
+        // ROLE TOGGLE
+        function toggleRoleMode() {
+            if (isTeacherMode) {
+                isTeacherMode = false;
+                applyRoleUI();
+            } else {
+                document.getElementById('pin-input').value = '';
+                document.getElementById('pin-error-msg').classList.add('hidden');
+                document.getElementById('pin-modal').classList.remove('hidden');
+                document.getElementById('pin-input').focus();
             }
-          };
-        });
-      });
+        }
 
-      document.querySelectorAll(".project-check").forEach(check => {
-        check.onchange = () => {
-          if (check.checked) {
-            completed.add(selectedTopicId);
-            renderDashboard();
-          }
-        };
-      });
-    }
+        function closePinModal() {
+            document.getElementById('pin-modal').classList.add('hidden');
+        }
 
-    function showDashboard() {
-      $("#topic-view").classList.add("hidden-view");
-      $("#dashboard-view").classList.remove("hidden-view");
-      renderDashboard();
-    }
+        function verifyTeacherPin() {
+            const inputPin = document.getElementById('pin-input').value;
+            const savedPin = localStorage.getItem('teacher_pin') || '1234';
 
-    function fillTopicsSelect() {
-      const select = $("#record-topic");
-      const current = select.value;
-      select.innerHTML = `<option value="">— Tidak ada / Topik utama —</option>` +
-        backendRecords.filter(record => record.type === "topic")
-          .sort((a, b) => a.order_index - b.order_index)
-          .map(topic => `<option value="${escapeHTML(topic.topic_id)}">${escapeHTML(topic.title)}</option>`).join("");
-      select.value = current;
-    }
+            if (inputPin === savedPin) {
+                isTeacherMode = true;
+                closePinModal();
+                applyRoleUI();
+            } else {
+                document.getElementById('pin-error-msg').classList.remove('hidden');
+            }
+        }
 
-    function renderManager() {
-      if (!teacherMode) return;
-      fillTopicsSelect();
-      const list = $("#manage-list");
-      list.innerHTML = "";
+        function applyRoleUI() {
+            const modeBadgeText = document.getElementById('mode-badge-text');
+            const modeBadge = document.getElementById('mode-badge');
+            const teacherSection = document.getElementById('teacher-menu-section');
 
-      [...backendRecords].sort((a, b) => a.order_index - b.order_index).forEach(record => {
-        const row = document.createElement("div");
-        row.className = "flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm";
-        row.innerHTML = `
-          <div class="min-w-0 flex-1">
-            <p class="truncate font-bold text-[#12355b]">${escapeHTML(record.title)}</p>
-            <p class="text-xs text-slate-500">${escapeHTML(record.type)} · urutan ${record.order_index} · ${record.published ? "Publik" : "Draf"}</p>
-          </div>
-          <button class="edit-row rounded-lg bg-[#e7f1f8] px-2.5 py-1.5 text-sm font-bold text-[#12355b]" data-id="${record.__backendId}">Edit</button>
-          <button class="delete-row rounded-lg bg-[#ffe2dd] px-2.5 py-1.5 text-sm font-bold text-[#a92d21]" data-id="${record.__backendId}">Hapus</button>`;
-        list.appendChild(row);
-      });
+            if (isTeacherMode) {
+                modeBadgeText.innerText = 'Mode Pengajar';
+                modeBadge.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5';
+                teacherSection.classList.remove('hidden');
+            } else {
+                modeBadgeText.innerText = 'Mode Siswa';
+                modeBadge.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5';
+                teacherSection.classList.add('hidden');
+            }
+        }
 
-      list.querySelectorAll(".edit-row").forEach(button => button.onclick = () => startEdit(button.dataset.id));
-      list.querySelectorAll(".delete-row").forEach(button => {
-        button.onclick = () => {
-          deleteTarget = button.dataset.id;
-          $("#delete-modal").classList.remove("hidden");
-        };
-      });
-    }
-
-    function resetForm() {
-      $("#content-form").reset();
-      $("#record-id").value = "";
-      $("#record-order").value = backendRecords.length + 1;
-      fillTopicsSelect();
-    }
-
-    function startEdit(id) {
-      const record = backendRecords.find(item => item.__backendId === id);
-      if (!record || !teacherMode) return;
-      $("#record-id").value = record.__backendId;
-      $("#record-type").value = record.type;
-      fillTopicsSelect();
-      $("#record-topic").value = record.topic_id || "";
-      $("#record-title").value = record.title || "";
-      $("#record-content").value = record.content || "";
-      $("#record-order").value = record.order_index || 1;
-      $("#record-published").checked = !!record.published;
-      $("#content-form").scrollIntoView({ behavior: "smooth" });
-    }
-
-    // ----------------------------------------------------
-    // OPERASI KRUD REALTIME DENGAN FIREBASE
-    // ----------------------------------------------------
-    function initialize() {
-      setSave("Memuat dari Firebase…");
-      
-      db.ref("records").on("value", (snapshot) => {
-        clearTimeout(initialTimer);
-        const data = snapshot.val();
-        backendRecords = [];
-        
-        if (data) {
-          Object.keys(data).forEach((key) => {
-            backendRecords.push({
-              __backendId: key,
-              ...data[key]
+        // TAB SWITCHING
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-blue-50', 'text-blue-600', 'border-blue-600');
+                el.classList.add('border-transparent', 'text-slate-600');
             });
-          });
+
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            if (activeTab) activeTab.classList.remove('hidden');
+
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.add('bg-blue-50', 'text-blue-600', 'border-blue-600');
+                activeNav.classList.remove('border-transparent', 'text-slate-600');
+            }
         }
-        
-        setSave("Terhubung ke Firebase");
-        renderDashboard();
-        if (teacherMode) renderManager();
-      }, (error) => {
-        clearTimeout(initialTimer);
-        setSave("Gagal terhubung ke Firebase.");
-        console.error(error);
-      });
-    }
 
-    async function saveRecord(event) {
-      event.preventDefault();
-      if (!teacherMode) return;
+        // VIDEO LEARNING EMBEDDING (YouTube / Google Drive)
+        function parseVideoEmbedUrl(url) {
+            if (!url) return '';
+            
+            // YouTube Handler (watch?v= or youtu.be/)
+            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            if (ytMatch && ytMatch[1]) {
+                return `https://www.youtube.com/embed/${ytMatch[1]}`;
+            }
 
-      const control = event.submitter;
-      const content = $("#record-content").value.trim();
+            // Google Drive Video Handler (/file/d/FILE_ID/view)
+            const gdMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (gdMatch && gdMatch[1]) {
+                return `https://drive.google.com/file/d/${gdMatch[1]}/preview`;
+            }
 
-      try {
-        JSON.parse(content);
-      } catch {
-        status("Isi harus berupa JSON yang valid. Gunakan tanda kutip ganda pada nama kolom.", "error");
-        return;
-      }
-
-      const recordId = $("#record-id").value;
-      const record = {
-        type: $("#record-type").value,
-        topic_id: $("#record-topic").value,
-        title: $("#record-title").value.trim(),
-        content,
-        order_index: Number($("#record-order").value) || 1,
-        published: $("#record-published").checked,
-        updated_at: new Date().toISOString()
-      };
-
-      control.disabled = true;
-      try {
-        if (recordId) {
-          await db.ref("records/" + recordId).update(record);
-          status("Perubahan berhasil diperbarui di Firebase!");
-        } else {
-          await db.ref("records").push(record);
-          status("Konten baru berhasil disimpan ke Firebase!");
+            return url;
         }
-        resetForm();
-      } catch (err) {
-        status("Gagal menyimpan: " + err.message, "error");
-      } finally {
-        control.disabled = false;
-      }
-    }
 
-    async function removeRecord() {
-      if (!deleteTarget || !teacherMode) {
-        $("#delete-modal").classList.add("hidden");
-        return;
-      }
+        function saveVideoUrl() {
+            const rawUrl = document.getElementById('input-video-url').value.trim();
+            const title = document.getElementById('input-video-title').value.trim() || 'Video Tutorial Informatika';
 
-      const control = $("#confirm-delete");
-      control.disabled = true;
-      try {
-        await db.ref("records/" + deleteTarget).remove();
-        status("Konten berhasil dihapus.");
-        $("#delete-modal").classList.add("hidden");
-      } catch (err) {
-        status("Gagal menghapus konten: " + err.message, "error");
-      } finally {
-        control.disabled = false;
-        deleteTarget = null;
-      }
-    }
-
-    async function addExamples() {
-      if (!teacherMode) return;
-      if (backendRecords.length !== 0) {
-        status("Reset contoh hanya tersedia saat daftar konten kosong agar tidak duplikat.", "error");
-        return;
-      }
-
-      const button = $("#reset-content");
-      button.disabled = true;
-      try {
-        for (const record of sampleRows()) {
-          await db.ref("records").push(record);
+            if (rawUrl) {
+                const embedUrl = parseVideoEmbedUrl(rawUrl);
+                localStorage.setItem('video_embed_url', embedUrl);
+                localStorage.setItem('video_raw_url', rawUrl);
+                localStorage.setItem('video_title', title);
+                loadVideoUrl();
+                alert('Materi video pembelajaran berhasil disimpan!');
+            } else {
+                localStorage.removeItem('video_embed_url');
+                localStorage.removeItem('video_raw_url');
+                localStorage.removeItem('video_title');
+                loadVideoUrl();
+                alert('Tautan video telah dihapus.');
+            }
         }
-        status("Konten contoh berhasil ditambahkan ke Firebase.");
-      } catch (err) {
-        status("Gagal menambahkan contoh: " + err.message, "error");
-      } finally {
-        button.disabled = false;
-      }
-    }
 
-    function enterTeacherMode() {
-      teacherMode = true;
-      document.body.classList.add("teacher-mode");
-      $("#teacher-confirm-modal").classList.add("hidden");
-      $("#teacher-access-modal").classList.add("hidden");
-      $("#teacher-code").value = "";
-      $("#teacher-code-error").classList.add("hidden");
-      renderManager();
-      if (window.lucide) lucide.createIcons();
-    }
+        function loadVideoUrl() {
+            const savedEmbedUrl = localStorage.getItem('video_embed_url');
+            const savedRawUrl = localStorage.getItem('video_raw_url');
+            const savedTitle = localStorage.getItem('video_title') || 'Video Tutorial Informatika';
 
-    function lockTeacherMode() {
-      teacherMode = false;
-      deleteTarget = null;
-      document.body.classList.remove("teacher-mode");
-      $("#edit-panel").classList.add("hidden");
-      $("#delete-modal").classList.add("hidden");
-      $("#teacher-confirm-modal").classList.add("hidden");
-      $("#teacher-access-modal").classList.add("hidden");
-      $("#teacher-code").value = "";
-      $("#teacher-code-error").classList.add("hidden");
-      showDashboard();
-      if (window.lucide) lucide.createIcons();
-    }
+            const frameContainer = document.getElementById('video-frame-container');
+            const placeholder = document.getElementById('video-placeholder');
+            const iframe = document.getElementById('video-iframe');
+            const displayTitle = document.getElementById('video-display-title');
+            
+            const teacherUrlInput = document.getElementById('input-video-url');
+            const teacherTitleInput = document.getElementById('input-video-title');
 
-    function sampleRows() {
-      return [
-        ["topic","algoritma","Algoritma dan Pemrograman",1,{"summary":"Pelajari cara menyusun instruksi yang jelas agar komputer dapat menyelesaikan masalah.","objective":"Menjelaskan algoritma, pseudocode, flowchart, dan dasar pemrograman.","time":"80 menit"}],
-        ["topic","jaringan","Jaringan Komputer dan Internet",2,{"summary":"Kenali perangkat jaringan, koneksi internet, dan kebiasaan digital yang aman.","objective":"Memahami cara perangkat terhubung dan bertukar informasi.","time":"75 menit"}],
-        ["topic","data","Data dan Dampak Sosial Informatika",3,{"summary":"Gunakan data secara bijak sambil menjaga privasi dan etika digital.","objective":"Menganalisis data, jejak digital, serta dampak teknologi.","time":"70 menit"}],
-        ["topic","sistem","Sistem Komputer",4,{"summary":"Kenali komponen yang membuat sebuah komputer bekerja sebagai satu sistem.","objective":"Membedakan perangkat keras, perangkat lunak, dan sistem operasi.","time":"75 menit"}]
-      ].map(([type,topic_id,title,order_index,content]) => ({
-        type, topic_id, title, content: JSON.stringify(content), order_index, published: true, updated_at: new Date().toISOString()
-      }));
-    }
+            if (teacherUrlInput && savedRawUrl) teacherUrlInput.value = savedRawUrl;
+            if (teacherTitleInput && savedTitle) teacherTitleInput.value = savedTitle;
+            if (displayTitle) displayTitle.innerText = savedTitle;
 
-    document.addEventListener("DOMContentLoaded", () => {
-      if (window.lucide) lucide.createIcons();
-      initialize();
-
-      $("#topic-search").oninput = renderDashboard;
-      $("#clear-search").onclick = () => {
-        $("#topic-search").value = "";
-        renderDashboard();
-      };
-
-      $("#dashboard-nav").onclick = showDashboard;
-      $("#back-dashboard").onclick = showDashboard;
-      $("#hero-start-button").onclick = () => {
-        const firstTopic = topics()[0];
-        if (firstTopic) openTopic(firstTopic.topic_id);
-      };
-
-      $("#teacher-login-button").onclick = () => {
-        $("#teacher-access-modal").classList.remove("hidden");
-        $("#teacher-code").focus();
-      };
-
-      $("#teacher-cancel-button").onclick = () => {
-        $("#teacher-access-modal").classList.add("hidden");
-        $("#teacher-code").value = "";
-        $("#teacher-code-error").classList.add("hidden");
-      };
-
-      $("#teacher-access-form").onsubmit = event => {
-        event.preventDefault();
-        if ($("#teacher-code").value === teacherAccessCode) {
-          $("#teacher-access-modal").classList.add("hidden");
-          $("#teacher-confirm-modal").classList.remove("hidden");
-          $("#teacher-code-error").classList.add("hidden");
-        } else {
-          $("#teacher-code-error").classList.remove("hidden");
-          $("#teacher-code").focus();
+            if (savedEmbedUrl) {
+                if (frameContainer) frameContainer.classList.remove('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+                if (iframe) iframe.src = savedEmbedUrl;
+            } else {
+                if (frameContainer) frameContainer.classList.add('hidden');
+                if (placeholder) placeholder.classList.remove('hidden');
+                if (iframe) iframe.src = '';
+            }
         }
-      };
 
-      $("#cancel-teacher-confirm").onclick = () => {
-        $("#teacher-confirm-modal").classList.add("hidden");
-        $("#teacher-code").value = "";
-      };
+        // GOOGLE FORM MANAGEMENT
+        function saveGoogleFormUrl() {
+            const urlInput = document.getElementById('input-gform-url').value.trim();
+            if (urlInput) {
+                localStorage.setItem('gform_url', urlInput);
+                loadGoogleFormUrl();
+                alert('Tautan Google Form berhasil disimpan!');
+            } else {
+                localStorage.removeItem('gform_url');
+                loadGoogleFormUrl();
+                alert('Tautan Google Form dikosongkan.');
+            }
+        }
 
-      $("#activate-teacher-mode").onclick = enterTeacherMode;
-      $("#teacher-tools-button").onclick = () => {
-        if (!teacherMode) return;
-        $("#edit-panel").classList.remove("hidden");
-        renderManager();
-        resetForm();
-      };
+        function loadGoogleFormUrl() {
+            const savedUrl = localStorage.getItem('gform_url');
+            const frameContainer = document.getElementById('gform-frame-container');
+            const placeholder = document.getElementById('gform-placeholder');
+            const iframe = document.getElementById('gform-iframe');
+            const externalBtn = document.getElementById('gform-external-link-btn');
+            const directUrl = document.getElementById('gform-direct-url');
+            const teacherInput = document.getElementById('input-gform-url');
 
-      $("#close-edit-panel").onclick = () => $("#edit-panel").classList.add("hidden");
-      $("#return-student-button").onclick = lockTeacherMode;
-      $("#lock-teacher-button").onclick = lockTeacherMode;
-      $("#content-form").onsubmit = saveRecord;
-      $("#cancel-edit").onclick = resetForm;
-      $("#confirm-delete").onclick = removeRecord;
-      $("#cancel-delete").onclick = () => {
-        deleteTarget = null;
-        $("#delete-modal").classList.add("hidden");
-      };
-      $("#reset-content").onclick = addExamples;
-    });
-  </script>
+            if (teacherInput && savedUrl) teacherInput.value = savedUrl;
+
+            if (savedUrl) {
+                if (frameContainer) frameContainer.classList.remove('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+                if (iframe) iframe.src = savedUrl;
+                if (externalBtn) externalBtn.classList.remove('hidden');
+                if (directUrl) directUrl.href = savedUrl;
+            } else {
+                if (frameContainer) frameContainer.classList.add('hidden');
+                if (placeholder) placeholder.classList.remove('hidden');
+                if (externalBtn) externalBtn.classList.add('hidden');
+            }
+        }
+
+        // SECURITY & DATA MANAGEMENT
+        function saveNewPin() {
+            const newPin = document.getElementById('input-new-pin').value;
+            const confirmPin = document.getElementById('input-confirm-pin').value;
+
+            if (!newPin || newPin.length < 4) {
+                alert('PIN harus minimal 4 karakter!');
+                return;
+            }
+            if (newPin !== confirmPin) {
+                alert('Konfirmasi PIN tidak cocok!');
+                return;
+            }
+
+            localStorage.setItem('teacher_pin', newPin);
+            alert('PIN Keamanan Guru berhasil diperbarui!');
+            document.getElementById('input-new-pin').value = '';
+            document.getElementById('input-confirm-pin').value = '';
+        }
+
+        function resetAllData() {
+            if (confirm('Apakah Anda yakin ingin mereset seluruh data lokal?')) {
+                localStorage.clear();
+                alert('Data berhasil di-reset.');
+                location.reload();
+            }
+        }
+
+        // INTERACTIVE CANVAS ENGINE & UTILS
+        function initTableData() {
+            const tbody = document.getElementById('chart-data-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            chartData.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-3"><input type="text" value="${item.label}" onchange="updateRowLabel(${index}, this.value)" class="w-full border rounded px-2 py-1 text-xs"></td>
+                    <td class="p-3"><input type="number" value="${item.value}" onchange="updateRowValue(${index}, this.value)" class="w-full border rounded px-2 py-1 text-xs"></td>
+                    <td class="p-3 text-center"><button onclick="removeTableRow(${index})" class="text-red-500 hover:text-red-700 text-xs"><i class="fa-solid fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addTableRow() { chartData.push({ label: 'Item Baru', value: 50 }); initTableData(); renderCanvasChart(); }
+        function removeTableRow(i) { chartData.splice(i, 1); initTableData(); renderCanvasChart(); }
+        function updateRowLabel(i, v) { chartData[i].label = v; renderCanvasChart(); }
+        function updateRowValue(i, v) { chartData[i].value = Number(v) || 0; renderCanvasChart(); }
+
+        function renderCanvasChart() {
+            const canvas = document.getElementById('dataChartCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const type = document.getElementById('chart-type-select').value;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (chartData.length === 0) return;
+            const colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+
+            if (type === 'bar') {
+                const maxVal = Math.max(...chartData.map(d => d.value), 10);
+                const barWidth = 40;
+                const gap = 30;
+                const startX = 50;
+
+                chartData.forEach((item, i) => {
+                    const barHeight = (item.value / maxVal) * 180;
+                    const x = startX + i * (barWidth + gap);
+                    const y = canvas.height - 40 - barHeight;
+
+                    ctx.fillStyle = colors[i % colors.length];
+                    ctx.fillRect(x, y, barWidth, barHeight);
+                    ctx.fillStyle = '#334155';
+                    ctx.font = '11px Inter';
+                    ctx.fillText(item.label, x, canvas.height - 20);
+                    ctx.fillText(item.value, x + 10, y - 5);
+                });
+            } else if (type === 'pie') {
+                const total = chartData.reduce((acc, curr) => acc + curr.value, 0) || 1;
+                let startAngle = 0;
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                chartData.forEach((item, i) => {
+                    const sliceAngle = (item.value / total) * 2 * Math.PI;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.arc(centerX, centerY, 80, startAngle, startAngle + sliceAngle);
+                    ctx.closePath();
+                    ctx.fillStyle = colors[i % colors.length];
+                    ctx.fill();
+                    startAngle += sliceAngle;
+                });
+            } else if (type === 'line') {
+                const maxVal = Math.max(...chartData.map(d => d.value), 10);
+                const gap = (canvas.width - 80) / (chartData.length - 1 || 1);
+
+                ctx.beginPath();
+                ctx.strokeStyle = '#2563eb';
+                ctx.lineWidth = 3;
+
+                chartData.forEach((item, i) => {
+                    const x = 40 + i * gap;
+                    const y = canvas.height - 40 - (item.value / maxVal) * 180;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+            }
+        }
+
+        // SIMULATORS
+        function renderGrid() {
+            const grid = document.getElementById('grid-container');
+            if (!grid) return;
+            grid.innerHTML = '';
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'border border-slate-200 rounded flex items-center justify-center text-lg font-bold';
+                    if (robotPos.x === c && robotPos.y === r) {
+                        cell.innerHTML = '🤖';
+                        cell.classList.add('bg-blue-100');
+                    }
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        function moveRobot(dir) {
+            if (dir === 'up' && robotPos.y > 0) robotPos.y--;
+            if (dir === 'down' && robotPos.y < 3) robotPos.y++;
+            if (dir === 'left' && robotPos.x > 0) robotPos.x--;
+            if (dir === 'right' && robotPos.x < 3) robotPos.x++;
+            renderGrid();
+        }
+
+        function updateCipher() {
+            const input = document.getElementById('cipher-input').value;
+            let res = '';
+            for (let i = 0; i < input.length; i++) {
+                let code = input.charCodeAt(i);
+                res += String.fromCharCode(code + 3);
+            }
+            document.getElementById('cipher-output').value = res;
+        }
+
+        function checkScoreLogic() {
+            const score = Number(document.getElementById('score-input').value);
+            const res = document.getElementById('score-result');
+            if (score >= 75) {
+                res.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-check-circle"></i> TUNTAS (Nilai ${score} >= 75)</span>`;
+            } else {
+                res.innerHTML = `<span class="text-red-600 font-bold"><i class="fa-solid fa-circle-xmark"></i> REMEDIAL (Nilai ${score} < 75)</span>`;
+            }
+        }
+
+        function updateProgress() {
+            const pBar = document.getElementById('global-progress-bar');
+            const pText = document.getElementById('global-progress-text');
+            if (pBar && pText) {
+                pBar.style.width = '30%';
+                pText.innerText = '30%';
+            }
+        }
+    </script>
 </body>
 </html>
