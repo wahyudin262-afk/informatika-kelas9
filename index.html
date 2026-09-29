@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Situs Pembelajaran Informatika Kelas 9</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Fraunces:opsz,wght@9..144,700&amp;display=swap" rel="stylesheet">
+  
+  <style>
+    :root{--ink:#19324a;--navy:#12355b;--sky:#d9f3ff;--mint:#d9f7e9;--sun:#ffc94a;--coral:#ff775f;--paper:#f7fbff}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"DM Sans",sans-serif;color:var(--ink);background:var(--paper)}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #ffb000;outline-offset:3px}
+    .app-shell{width:100%;min-height:calc(100 * min(var(--vh, 1vh), 1vh));background:linear-gradient(120deg,#f7fbff 0%,#eef9ff 53%,#fff8df 100%)}
+    .sidebar{background:#12355b;color:#fff}
+    .topic-nav{border-left:4px solid transparent}
+    .topic-nav.active{background:#ffffff20;border-left-color:#ffc94a}
+    .topic-card{transition:transform .2s ease,box-shadow .2s ease}
+    .topic-card:hover{transform:translateY(-4px);box-shadow:0 18px 35px rgba(18,53,91,.12)}
+    .panel{box-shadow:0 12px 35px rgba(26,70,104,.08)}
+    .edit-panel{max-height:calc(100 * min(var(--vh, 1vh), 1vh));overflow:auto}
+    .sim-choice{transition:all .18s ease}
+    .sim-choice.correct{background:#d9f7e9!important;border-color:#1d9b62!important;color:#0b613a}
+    .sim-choice.wrong{background:#ffe2dd!important;border-color:#e65645!important;color:#8d251b}
+    .quiz-option.selected{border-color:#12355b;background:#e4f5ff}
+    .status-dot{animation:pulse 2s infinite}
+    @keyframes pulse{50%{opacity:.45;transform:scale(.8)}}
+    .hero-grid{background-image:linear-gradient(rgba(18,53,91,.8),rgba(18,53,91,.68))}
+    .reveal{animation:rise .45s ease both}
+    @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .hidden-view{display:none!important}
+    .teacher-only{display:none!important}
+    body.teacher-mode .teacher-only{display:flex!important}
+    body.teacher-mode .teacher-only.block{display:block!important}
+    body.teacher-mode .teacher-only.inline-flex{display:inline-flex!important}
+    body.teacher-mode .student-access{display:none!important}
+    @media(max-width:1023px){.sidebar{position:static}}
+  </style>
+
+  <!-- External Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
+  
+  <!-- Firebase SDK (v9 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+
+<body style="background: linear-gradient(120deg, rgb(247, 251, 255), rgb(255, 248, 223));">
+  <div class="app-shell">
+   <header class="canva-header sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur" style="background: rgb(255, 255, 255);">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+     <div class="flex min-w-0 items-center gap-3">
+      <div class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#ffc94a] text-[#12355b]">
+       <i data-lucide="monitor-smartphone" aria-hidden="true"></i>
+      </div>
+      <div class="min-w-0">
+       <h1 class="canva-text truncate font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 32px;">Situs Pembelajaran Informatika Kelas 9</h1>
+       <p class="canva-text hidden text-sm text-slate-500 sm:block" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 16px;">Belajar, mencoba, dan berkarya dengan teknologi</p>
+      </div>
+     </div>
+     <div class="flex items-center gap-2">
+      <span id="save-status" class="hidden text-xs font-semibold text-[#197347] sm:inline-flex sm:items-center sm:gap-1"> 
+        <span class="status-dot h-2 w-2 rounded-full bg-[#2aaf70]"></span> 
+        <span id="save-status-text">Memuat konten…</span> 
+      </span> 
+      <span class="canva-tag student-access hidden rounded-full bg-[#d9f7e9] px-3 py-1.5 text-xs font-bold text-[#0e6340] sm:inline-flex" style="background: rgb(217, 247, 233); color: rgb(14, 99, 64); font-weight: 700; font-style: normal; font-size: 16px;">Mode Siswa</span> 
+      <span class="canva-tag teacher-only hidden rounded-full bg-[#fff1cf] px-3 py-1.5 text-xs font-bold text-[#855000]" style="background: rgb(255, 241, 207); color: rgb(133, 80, 0); font-weight: 700; font-style: normal; font-size: 16px;">Mode Pengajar aktif</span> 
+      <button id="teacher-login-button" type="button" class="canva-button student-access inline-flex items-center gap-2 rounded-xl border border-[#12355b] bg-white px-3 py-2 text-sm font-bold text-[#12355b] hover:bg-[#eaf6fd]" style="background: rgb(255, 255, 255); color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 16px;">Masuk sebagai Pengajar</button> 
+      <button id="teacher-tools-button" type="button" class="canva-button teacher-only hidden items-center gap-2 rounded-xl bg-[#12355b] px-3 py-2 text-sm font-bold text-white hover:bg-[#0b2948]" style="background: rgb(18, 53, 91); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 16px;">Kelola konten</button>
+     </div>
+    </div>
+    <div id="teacher-bar" class="teacher-only hidden border-t border-[#e9c96d] bg-[#fff8df]">
+     <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
+      <div class="flex items-center gap-2 text-sm font-semibold text-[#704400]">
+       <i data-lucide="shield-check" class="h-4 w-4" aria-hidden="true"></i> 
+       <span class="canva-text" style="color: rgb(112, 68, 0); font-weight: 600; font-style: normal; font-size: 16px;">Kontrol pengelolaan konten sedang terbuka untuk pengajar.</span>
+      </div>
+      <div class="flex gap-2">
+       <button id="return-student-button" type="button" class="canva-button rounded-lg bg-white px-3 py-1.5 text-sm font-bold text-[#12355b] shadow-sm hover:bg-[#eef8fd]" style="background: rgb(255, 255, 255); color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 16px;">Kembali ke Mode Siswa</button> 
+       <button id="lock-teacher-button" type="button" class="canva-button inline-flex items-center gap-1 rounded-lg bg-[#12355b] px-3 py-1.5 text-sm font-bold text-white hover:bg-[#0b2948]" style="background: rgb(18, 53, 91); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 16px;">Kunci Mode Pengajar</button>
+      </div>
+     </div>
+    </div>
+   </header>
+
+   <div class="mx-auto flex max-w-7xl flex-col lg:flex-row">
+    <aside class="sidebar w-full shrink-0 p-4 lg:sticky lg:top-[73px] lg:h-[calc(100*min(var(--vh,1vh),1vh)-73px)] lg:w-72 lg:overflow-y-auto">
+     <nav aria-label="Navigasi pembelajaran">
+      <button id="dashboard-nav" type="button" class="topic-nav mb-3 flex w-full items-center gap-3 rounded-r-xl px-3 py-3 text-left font-bold hover:bg-white/10"> 
+        <i data-lucide="layout-dashboard" class="h-5 w-5" aria-hidden="true"></i> 
+        <span>Dashboard Belajar</span> 
+      </button>
+      <p class="canva-text mb-2 px-3 text-xs font-bold uppercase tracking-[.16em] text-[#a6d8f0]" style="color: rgb(166, 216, 240); font-weight: 700; font-style: normal; font-size: 16px;">Daftar Topik</p>
+      <div id="topic-nav-list" class="space-y-1"></div>
+     </nav>
+     <div class="mt-6 rounded-2xl bg-white/10 p-4">
+      <p class="canva-text font-bold text-[#ffc94a]" style="color: rgb(255, 201, 74); font-weight: 700; font-style: normal; font-size: 16px;">Tip belajar</p>
+      <p class="canva-text mt-1 text-sm leading-relaxed text-slate-200" style="color: rgb(226, 237, 244); font-weight: 400; font-style: normal; font-size: 16px;">Coba satu aktivitas setiap kali belajar. Tidak harus terburu-buru—yang penting paham.</p>
+     </div>
+    </aside>
+
+    <main class="min-w-0 flex-1 p-4 sm:p-6">
+     <section id="dashboard-view" class="reveal">
+      <div class="canva-banner hero-grid overflow-hidden rounded-[28px] bg-[#12355b]" style="background: rgb(18, 53, 91);">
+       <div class="grid items-stretch lg:grid-cols-[1.1fr_.9fr]">
+        <div class="p-7 sm:p-10">
+         <p class="canva-tag mb-3 inline-block rounded-full bg-[#ffc94a] px-3 py-1 text-sm font-bold text-[#12355b]" style="background: rgb(255, 201, 74); color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 16px;">INFORMATIKA • KELAS 9</p>
+         <h2 class="canva-text max-w-xl font-['Fraunces'] font-bold text-white" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 24px;">Pahami teknologi. Ciptakan solusi.</h2>
+         <p class="canva-text mt-4 max-w-xl leading-relaxed text-[#e4f5ff]" style="color: rgb(228, 245, 255); font-weight: 400; font-style: normal; font-size: 16px;">Jelajahi konsep informatika lewat materi singkat, simulasi, kuis, dan proyek praktik yang seru.</p>
+         <button id="hero-start-button" type="button" class="canva-button mt-6 inline-flex items-center gap-2 rounded-xl bg-[#ffc94a] px-5 py-3 font-bold text-[#12355b] hover:bg-[#ffdc76]" style="background: rgb(255, 201, 74); color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 16px;">Mulai belajar</button>
+        </div>
+        <img loading="lazy" class="canva-image h-56 w-full object-cover lg:h-full" src="https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1280" alt="Siswi belajar menggunakan laptop">
+       </div>
+      </div>
+
+      <section class="mt-6" aria-labelledby="progress-heading">
+       <div class="mb-3 flex items-end justify-between gap-4">
+        <div>
+         <h2 id="progress-heading" class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Progres belajarku</h2>
+         <p class="canva-text mt-1 text-sm text-slate-600" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Setiap langkah kecil akan membantumu menjadi lebih siap menghadapi dunia digital.</p>
+        </div>
+        <span id="progress-percent" class="rounded-full bg-[#d9f7e9] px-3 py-1 text-sm font-bold text-[#0e6340]">0%</span>
+       </div>
+       <div class="grid gap-3 sm:grid-cols-3">
+        <article class="panel rounded-2xl bg-white p-4">
+         <p class="canva-text text-sm text-slate-500" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 16px;">Topik tersedia</p>
+         <p id="topic-count" class="mt-1 text-3xl font-bold text-[#12355b]">0</p>
+        </article>
+        <article class="panel rounded-2xl bg-white p-4">
+         <p class="canva-text text-sm text-slate-500" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 16px;">Topik dijelajahi</p>
+         <p id="completed-count" class="mt-1 text-3xl font-bold text-[#1d9b62]">0</p>
+        </article>
+        <article class="panel rounded-2xl bg-white p-4">
+         <p class="canva-text text-sm text-slate-500" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 16px;">Poin kuis</p>
+         <p id="score-count" class="mt-1 text-3xl font-bold text-[#e18b00]">0</p>
+        </article>
+       </div>
+      </section>
+
+      <section class="mt-8" aria-labelledby="topic-heading">
+       <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+        <div>
+         <h2 id="topic-heading" class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Pilih petualangan belajarmu</h2>
+         <p class="canva-text mt-1 text-slate-600" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Setiap topik memiliki materi, aktivitas interaktif, kuis, dan proyek praktik.</p>
+        </div>
+        <div class="flex w-full gap-2 sm:w-auto">
+         <label class="sr-only" for="topic-search">Cari topik</label>
+         <div class="relative flex-1 sm:w-64">
+          <i data-lucide="search" class="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400"></i> 
+          <input id="topic-search" type="search" class="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm" placeholder="Cari topik atau materi">
+         </div>
+         <button id="clear-search" type="button" class="rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-[#12355b]">Reset</button>
+        </div>
+       </div>
+       <div id="topic-grid" class="mt-5 grid gap-5 md:grid-cols-2"></div>
+       <p id="empty-topics" class="hidden rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-500">Belum ada topik yang cocok.</p>
+      </section>
+     </section>
+
+     <section id="topic-view" class="hidden-view reveal" aria-live="polite">
+      <button id="back-dashboard" type="button" class="mb-4 inline-flex items-center gap-2 text-sm font-bold text-[#12355b] hover:underline"> 
+        <i data-lucide="arrow-left" class="h-4 w-4" aria-hidden="true"></i> Kembali ke dashboard 
+      </button>
+      <div id="topic-detail"></div>
+     </section>
+    </main>
+   </div>
+
+   <!-- Panel Pengelola Mode Pengajar -->
+   <aside id="edit-panel" class="edit-panel hidden fixed inset-y-0 right-0 z-50 w-full max-w-2xl border-l border-slate-200 bg-[#f7fbff] shadow-2xl" aria-label="Panel pengelolaan konten">
+    <div class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white p-5">
+     <div>
+      <p class="canva-text text-xs font-bold uppercase tracking-[.14em] text-[#197347]" style="color: rgb(25, 115, 71); font-weight: 700; font-style: normal; font-size: 16px;">Pengelolaan konten</p>
+      <h2 class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Mode Pengajar</h2>
+     </div>
+     <button id="close-edit-panel" type="button" class="rounded-xl p-2 text-slate-500 hover:bg-slate-100" aria-label="Tutup panel"> <i data-lucide="x"></i> </button>
+    </div>
+    <div class="p-5">
+     <div id="manager-message" class="hidden mb-4 rounded-xl p-3 text-sm" role="status"></div>
+     <form id="content-form" class="panel rounded-2xl bg-white p-5">
+      <h3 id="form-heading" class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 19px;">Tambah konten baru</h3>
+      <input id="record-id" type="hidden">
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+       <div>
+        <label class="canva-text mb-1 block text-sm font-bold text-slate-700" for="record-type" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Jenis konten</label> 
+        <select id="record-type" class="w-full rounded-xl border border-slate-200 bg-white p-2.5"> 
+          <option value="topic">Topik</option> 
+          <option value="material">Materi</option> 
+          <option value="video">Video / Tautan</option> 
+          <option value="simulation">Simulasi</option> 
+          <option value="project">Proyek</option> 
+          <option value="quiz">Soal Kuis</option> 
+        </select>
+       </div>
+       <div>
+        <label class="canva-text mb-1 block text-sm font-bold text-slate-700" for="record-topic" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Topik induk</label> 
+        <select id="record-topic" class="w-full rounded-xl border border-slate-200 bg-white p-2.5"></select>
+       </div>
+       <div class="sm:col-span-2">
+        <label class="canva-text mb-1 block text-sm font-bold text-slate-700" for="record-title" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Judul</label> 
+        <input id="record-title" required="" class="w-full rounded-xl border border-slate-200 p-2.5" type="text">
+       </div>
+       <div class="sm:col-span-2">
+        <label class="canva-text mb-1 block text-sm font-bold text-slate-700" for="record-content" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Isi konten (format JSON)</label> 
+        <textarea id="record-content" required="" rows="7" class="w-full rounded-xl border border-slate-200 p-2.5 font-mono text-xs" placeholder='{"summary":"Ringkasan","objective":"Tujuan","time":"20 menit"}'></textarea>
+        <p class="canva-text mt-1 text-xs text-slate-500" style="color: rgb(100, 116, 139); font-weight: 400; font-style: normal; font-size: 16px;">Contoh materi: {"body":"Tulis isi materi di sini"}. Contoh kuis: {"question":"...","options":["A","B"],"answer":"A"}.</p>
+       </div>
+       <div>
+        <label class="canva-text mb-1 block text-sm font-bold text-slate-700" for="record-order" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Urutan tampil</label> 
+        <input id="record-order" min="1" value="1" class="w-full rounded-xl border border-slate-200 p-2.5" type="number">
+       </div>
+       <label class="mt-6 flex items-center gap-2 text-sm font-bold text-slate-700"> 
+        <input id="record-published" type="checkbox" class="h-4 w-4 accent-[#12355b]"> 
+        <span class="canva-text" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Publikasikan untuk siswa</span> 
+       </label>
+      </div>
+      <div class="mt-5 flex flex-wrap gap-2">
+       <button id="save-record" type="submit" class="canva-button rounded-xl bg-[#12355b] px-4 py-2.5 font-bold text-white hover:bg-[#0b2948]">Simpan perubahan</button> 
+       <button id="cancel-edit" type="button" class="canva-button rounded-xl bg-[#e7f1f8] px-4 py-2.5 font-bold text-[#12355b] hover:bg-[#d5e8f3]">Batal / konten baru</button>
+      </div>
+     </form>
+     <div class="mt-6 flex items-center justify-between">
+      <h3 class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 19px;">Daftar seluruh konten</h3>
+      <button id="reset-content" type="button" class="canva-button rounded-xl border border-[#e18b00] bg-[#fff8df] px-3 py-2 text-sm font-bold text-[#9a5d00]">Reset contoh konten</button>
+     </div>
+     <div id="manage-list" class="mt-3 space-y-2"></div>
+    </div>
+   </aside>
+
+   <!-- Modals -->
+   <div id="teacher-access-modal" class="hidden fixed inset-0 z-[70] grid place-items-center bg-[#12355b]/60 p-4" role="dialog" aria-modal="true">
+    <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+     <div class="grid h-11 w-11 place-items-center rounded-2xl bg-[#d9f3ff] text-[#12355b]">
+      <i data-lucide="shield-check" aria-hidden="true"></i>
+     </div>
+     <h2 class="canva-text mt-4 font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Akses Mode Pengajar</h2>
+     <p class="canva-text mt-2 leading-relaxed text-slate-600" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Masukkan kode akses pribadi untuk membuka kontrol pengelolaan konten.</p>
+     <form id="teacher-access-form" class="mt-5">
+      <label class="canva-text mb-1.5 block text-sm font-bold text-slate-700" for="teacher-code" style="color: rgb(51, 65, 85); font-weight: 700; font-style: normal; font-size: 16px;">Kode akses pengajar</label> 
+      <input id="teacher-code" type="password" autocomplete="off" required="" class="w-full rounded-xl border border-slate-300 px-3 py-2.5" placeholder="Masukkan kode akses">
+      <p id="teacher-code-error" class="hidden mt-2 text-sm font-semibold text-[#b12f25]" role="alert">Kode akses belum sesuai. Coba lagi.</p>
+      <div class="mt-5 flex justify-end gap-2">
+       <button id="teacher-cancel-button" type="button" class="canva-button rounded-xl bg-[#e7f1f8] px-4 py-2.5 font-bold text-[#12355b]">Batal</button> 
+       <button type="submit" class="canva-button rounded-xl bg-[#12355b] px-4 py-2.5 font-bold text-white hover:bg-[#0b2948]">Lanjutkan</button>
+      </div>
+     </form>
+    </div>
+   </div>
+
+   <div id="teacher-confirm-modal" class="hidden fixed inset-0 z-[75] grid place-items-center bg-[#12355b]/60 p-4" role="dialog" aria-modal="true">
+    <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+     <h2 class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Aktifkan Mode Pengajar?</h2>
+     <p class="canva-text mt-2 leading-relaxed text-slate-600" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Kontrol tambah, ubah, hapus, dan pengaturan konten akan ditampilkan.</p>
+     <div class="mt-5 flex justify-end gap-2">
+      <button id="cancel-teacher-confirm" type="button" class="canva-button rounded-xl bg-[#e7f1f8] px-4 py-2.5 font-bold text-[#12355b]">Tetap di Mode Siswa</button> 
+      <button id="activate-teacher-mode" type="button" class="canva-button rounded-xl bg-[#12355b] px-4 py-2.5 font-bold text-white">Aktifkan Mode Pengajar</button>
+     </div>
+    </div>
+   </div>
+
+   <div id="delete-modal" class="hidden fixed inset-0 z-[80] grid place-items-center bg-[#12355b]/50 p-4" role="dialog" aria-modal="true">
+    <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+     <h2 class="canva-text font-bold text-[#12355b]" style="color: rgb(18, 53, 91); font-weight: 700; font-style: normal; font-size: 24px;">Hapus konten ini?</h2>
+     <p class="canva-text mt-2 text-slate-600" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Tindakan ini akan menghapus konten dari daftar pembelajaran.</p>
+     <div class="mt-5 flex justify-end gap-2">
+      <button id="cancel-delete" type="button" class="canva-button rounded-xl bg-[#e7f1f8] px-4 py-2 font-bold text-[#12355b]">Batal</button> 
+      <button id="confirm-delete" type="button" class="canva-button rounded-xl bg-[#d94738] px-4 py-2 font-bold text-white">Ya, hapus</button>
+     </div>
+    </div>
+   </div>
+  </div>
+
+  <script>
+    // ----------------------------------------------------
+    // KONFIGURASI FIREBASE (GANTI DENGAN KUNCI ANDA SAMAKAN DENGAN BAGIAN 1)
+    // ----------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyCcteYGlVMoWO2C4IWniu7rjghXSPoAXg",
+      authDomain: "situs-informatika-9.firebaseapp.com",
+      databaseURL: "https://situs-informatika-9-default-rtdb.firebaseio.com",
+      projectId: "situs-informatika-9",
+      storageBucket: "situs-informatika-9.firebasestorage.app",
+      messagingSenderId: "475564592954",
+      appId: "1:475564592954:web:20a5b3fe52f20293590a03I"
+      measurementId: "G-6H608ZP2N6"
+    };
+
+    // Inisialisasi Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Variable global
+    let backendRecords = [];
+    let selectedTopicId = null;
+    let deleteTarget = null;
+    let quizScore = 0;
+    let completed = new Set();
+    let teacherMode = false;
+    let initialTimer;
+
+    const $ = (selector) => document.querySelector(selector);
+    const teacherAccessCode = "199306222025211016";
+    
+    const iconMap = {
+      "Algoritma dan Pemrograman": "code-2",
+      "Jaringan Komputer dan Internet": "network",
+      "Data dan Dampak Sosial Informatika": "shield-check",
+      "Sistem Komputer": "cpu"
+    };
+    
+    const images = {
+      "Algoritma dan Pemrograman": "https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "Jaringan Komputer dan Internet": "https://images.pexels.com/photos/2881229/pexels-photo-2881229.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "Data dan Dampak Sosial Informatika": "https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=800",
+      "Sistem Komputer": "https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg?auto=compress&cs=tinysrgb&w=800"
+    };
+
+    function parse(value) {
+      try { return JSON.parse(value || "{}"); } catch { return {}; }
+    }
+
+    function escapeHTML(value) {
+      return String(value || "").replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[character]));
+    }
+
+    function topics() {
+      return backendRecords
+        .filter(record => record.type === "topic" && record.published)
+        .sort((a, b) => a.order_index - b.order_index);
+    }
+
+    function children(topicId, type) {
+      return backendRecords
+        .filter(record => record.topic_id === topicId && record.type === type && record.published)
+        .sort((a, b) => a.order_index - b.order_index);
+    }
+
+    function setSave(text) {
+      const el = $("#save-status-text");
+      if (el) el.textContent = text;
+    }
+
+    function status(text, kind = "ok") {
+      const element = $("#manager-message");
+      element.textContent = text;
+      element.className = "mb-4 rounded-xl p-3 text-sm " + (kind === "error" ? "bg-red-100 text-red-800" : "bg-emerald-100 text-emerald-800");
+    }
+
+    function renderDashboard() {
+      const list = topics();
+      const search = $("#topic-search").value.toLowerCase();
+
+      $("#topic-count").textContent = list.length;
+      $("#completed-count").textContent = completed.size;
+      $("#score-count").textContent = quizScore;
+      $("#progress-percent").textContent = (list.length ? Math.round((completed.size / list.length) * 100) : 0) + "%";
+
+      const grid = $("#topic-grid");
+      const nav = $("#topic-nav-list");
+      grid.innerHTML = "";
+      nav.innerHTML = "";
+
+      list.forEach(topic => {
+        const content = parse(topic.content);
+        const matches = (topic.title + " " + (content.summary || "") + " " + (content.objective || "")).toLowerCase().includes(search);
+
+        const navButton = document.createElement("button");
+        navButton.type = "button";
+        navButton.className = "topic-nav flex w-full items-center gap-3 rounded-r-xl px-3 py-2.5 text-left text-sm hover:bg-white/10";
+        navButton.innerHTML = `<i data-lucide="${iconMap[topic.title] || "book-open"}" class="h-4 w-4 text-[#ffc94a]"></i><span>${escapeHTML(topic.title)}</span>`;
+        navButton.onclick = () => openTopic(topic.topic_id);
+        nav.appendChild(navButton);
+
+        if (!matches) return;
+
+        const card = document.createElement("article");
+        const photo = images[topic.title] || images["Algoritma dan Pemrograman"];
+        card.className = "topic-card panel overflow-hidden rounded-2xl bg-white";
+        card.innerHTML = `
+          <div class="h-28 bg-cover bg-center" style="background-image:linear-gradient(90deg,rgba(18,53,91,.26),rgba(18,53,91,.05)),url('${photo}')"></div>
+          <div class="p-5">
+            <div class="mb-3 flex items-start justify-between gap-3">
+              <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#d9f3ff] text-[#12355b]"><i data-lucide="${iconMap[topic.title] || "book-open"}" class="h-5 w-5"></i></span>
+              <span class="rounded-full bg-[#fff8df] px-2 py-1 text-xs font-bold text-[#9a5d00]">${escapeHTML(content.time || "60 menit")}</span>
+            </div>
+            <h3 class="text-lg font-bold text-[#12355b]">${escapeHTML(topic.title)}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">${escapeHTML(content.summary || "")}</p>
+            <div class="mt-4 rounded-xl bg-[#f3f9fd] p-3 text-sm"><strong>Tujuan:</strong> ${escapeHTML(content.objective || "Mempelajari konsep utama.")}</div>
+            <button type="button" class="start-topic mt-4 w-full rounded-xl bg-[#12355b] px-4 py-2.5 font-bold text-white hover:bg-[#0b2948]" data-id="${escapeHTML(topic.topic_id)}">Mulai belajar <span aria-hidden="true">→</span></button>
+          </div>`;
+        grid.appendChild(card);
+      });
+
+      $("#empty-topics").classList.toggle("hidden", grid.children.length > 0);
+      grid.querySelectorAll(".start-topic").forEach(button => button.onclick = () => openTopic(button.dataset.id));
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function simulationHTML(record) {
+      const content = parse(record.content);
+      const items = content.items || [];
+      return `<article class="panel rounded-2xl bg-[#eaf8ff] p-6">
+        <div class="flex items-center gap-2"><i data-lucide="sparkles" class="text-[#147aa6]"></i><h3 class="text-xl font-bold text-[#12355b]">Simulasi: ${escapeHTML(record.title)}</h3></div>
+        <p class="mt-2 text-slate-700">${escapeHTML(content.instruction || "Pilih jawaban yang paling tepat.")}</p>
+        <div class="sim-area mt-4 grid gap-2" data-answer="${escapeHTML(content.answer || "")}">
+          ${items.map(item => `<button type="button" class="sim-choice rounded-xl border-2 border-[#b8dced] bg-white px-4 py-3 text-left font-semibold text-[#12355b]" data-value="${escapeHTML(item)}">${escapeHTML(item)}</button>`).join("")}
+        </div>
+        <p class="sim-feedback mt-3 min-h-5 text-sm font-bold"></p>
+      </article>`;
+    }
+
+    function quizHTML(record) {
+      const content = parse(record.content);
+      const options = content.options || [];
+      return `<article class="panel rounded-2xl bg-white p-6">
+        <div class="flex items-center gap-2"><i data-lucide="circle-help" class="text-[#e18b00]"></i><h3 class="text-xl font-bold text-[#12355b]">Kuis: ${escapeHTML(record.title)}</h3></div>
+        <p class="mt-3 font-semibold text-slate-800">${escapeHTML(content.question || "")}</p>
+        <div class="quiz-area mt-4 grid gap-2" data-answer="${escapeHTML(content.answer || "")}">
+          ${options.map(option => `<button type="button" class="quiz-option rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-left text-slate-700 hover:border-[#12355b]" data-value="${escapeHTML(option)}">${escapeHTML(option)}</button>`).join("")}
+        </div>
+        <p class="quiz-feedback mt-3 min-h-5 text-sm font-bold"></p>
+      </article>`;
+    }
+
+    function projectHTML(record) {
+      const content = parse(record.content);
+      const steps = content.steps || [];
+      return `<article class="panel rounded-2xl bg-[#f5efff] p-6">
+        <div class="flex items-center gap-2"><i data-lucide="folder-kanban" class="text-[#6943a5]"></i><h3 class="text-xl font-bold text-[#12355b]">Proyek Praktik: ${escapeHTML(record.title)}</h3></div>
+        <p class="mt-2 text-slate-700">${escapeHTML(content.instruction || "")}</p>
+        <div class="mt-4 space-y-2">
+          ${steps.map(step => `<label class="flex items-start gap-3 rounded-xl bg-white p-3"><input type="checkbox" class="project-check mt-1 h-4 w-4 accent-[#6943a5]"><span>${escapeHTML(step)}</span></label>`).join("")}
+        </div>
+        <label class="mt-4 block text-sm font-bold text-[#12355b]" for="notes-${escapeHTML(record.topic_id)}">Catatan belajarku</label>
+        <textarea id="notes-${escapeHTML(record.topic_id)}" class="mt-1 w-full rounded-xl border border-[#d6c8f2] bg-white p-3" rows="3" placeholder="Tulis ide, hasil pengamatan, atau pertanyaanmu di sini…"></textarea>
+      </article>`;
+    }
+
+    function openTopic(topicId) {
+      selectedTopicId = topicId;
+      const topic = topics().find(record => record.topic_id === topicId);
+      if (!topic) return;
+
+      const content = parse(topic.content);
+      const materials = children(topicId, "material");
+      const videos = children(topicId, "video");
+      const simulations = children(topicId, "simulation");
+      const quizzes = children(topicId, "quiz");
+      const projects = children(topicId, "project");
+
+      $("#dashboard-view").classList.add("hidden-view");
+      $("#topic-view").classList.remove("hidden-view");
+
+      let html = `<div class="overflow-hidden rounded-[28px] bg-[#12355b] p-6 text-white sm:p-8">
+        <p class="text-sm font-bold uppercase tracking-[.16em] text-[#ffc94a]">Topik pembelajaran</p>
+        <h2 class="mt-2 font-['Fraunces'] text-3xl font-bold">${escapeHTML(topic.title)}</h2>
+        <p class="mt-3 max-w-3xl text-[#d9f3ff]">${escapeHTML(content.summary || "")}</p>
+        <div class="mt-5 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm">🎯 ${escapeHTML(content.objective || "")}</div>
+      </div><div class="mt-6 grid gap-5">`;
+
+      materials.forEach(record => {
+        const item = parse(record.content);
+        html += `<article class="panel rounded-2xl bg-white p-6">
+          <div class="flex gap-3">
+            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#d9f7e9] text-[#0e6340]"><i data-lucide="book-open"></i></span>
+            <div><h3 class="text-xl font-bold text-[#12355b]">${escapeHTML(record.title)}</h3><p class="mt-2 whitespace-pre-line leading-relaxed text-slate-700">${escapeHTML(item.body || item.summary || "")}</p></div>
+          </div>
+        </article>`;
+      });
+
+      videos.forEach(record => {
+        const item = parse(record.content);
+        html += `<article class="panel rounded-2xl bg-[#fff8df] p-5">
+          <h3 class="font-bold text-[#12355b]">🎬 ${escapeHTML(record.title)}</h3>
+          <p class="mt-1 text-sm text-slate-600">${escapeHTML(item.description || "Pelajari melalui materi visual berikut.")}</p>
+          ${item.url ? `<a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex rounded-xl bg-[#e18b00] px-4 py-2 font-bold text-white">Buka video / media ↗</a>` : `<p class="mt-3 text-sm italic text-slate-500">Tautan belum ditambahkan oleh pengelola.</p>`}
+        </article>`;
+      });
+
+      simulations.forEach(record => html += simulationHTML(record));
+      quizzes.forEach(record => html += quizHTML(record));
+      projects.forEach(record => html += projectHTML(record));
+      html += "</div>";
+
+      $("#topic-detail").innerHTML = html;
+      bindDetailInteractions();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function bindDetailInteractions() {
+      document.querySelectorAll(".sim-area").forEach(area => {
+        area.querySelectorAll("button").forEach(button => {
+          button.onclick = () => {
+            const correct = button.dataset.value === area.dataset.answer;
+            area.querySelectorAll("button").forEach(item => item.disabled = true);
+            button.classList.add(correct ? "correct" : "wrong");
+            area.parentElement.querySelector(".sim-feedback").textContent = correct ? "Bagus! Jawabanmu tepat." : "Belum tepat. Coba baca kembali materi dan ulangi nanti.";
+          };
+        });
+      });
+
+      document.querySelectorAll(".quiz-area").forEach(area => {
+        area.querySelectorAll("button").forEach(button => {
+          button.onclick = () => {
+            if (area.dataset.done) return;
+            area.dataset.done = "1";
+            const correct = button.dataset.value === area.dataset.answer;
+            button.classList.add(correct ? "correct" : "wrong");
+            area.querySelectorAll("button").forEach(item => item.disabled = true);
+            area.parentElement.querySelector(".quiz-feedback").textContent = correct ? "✅ Tepat! Kamu memperoleh 10 poin." : "💡 Belum tepat. Pelajari materinya, lalu lanjut ke aktivitas berikutnya.";
+            if (correct) {
+              quizScore += 10;
+              completed.add(selectedTopicId);
+              renderDashboard();
+            }
+          };
+        });
+      });
+
+      document.querySelectorAll(".project-check").forEach(check => {
+        check.onchange = () => {
+          if (check.checked) {
+            completed.add(selectedTopicId);
+            renderDashboard();
+          }
+        };
+      });
+    }
+
+    function showDashboard() {
+      $("#topic-view").classList.add("hidden-view");
+      $("#dashboard-view").classList.remove("hidden-view");
+      renderDashboard();
+    }
+
+    function fillTopicsSelect() {
+      const select = $("#record-topic");
+      const current = select.value;
+      select.innerHTML = `<option value="">— Tidak ada / Topik utama —</option>` +
+        backendRecords.filter(record => record.type === "topic")
+          .sort((a, b) => a.order_index - b.order_index)
+          .map(topic => `<option value="${escapeHTML(topic.topic_id)}">${escapeHTML(topic.title)}</option>`).join("");
+      select.value = current;
+    }
+
+    function renderManager() {
+      if (!teacherMode) return;
+      fillTopicsSelect();
+      const list = $("#manage-list");
+      list.innerHTML = "";
+
+      [...backendRecords].sort((a, b) => a.order_index - b.order_index).forEach(record => {
+        const row = document.createElement("div");
+        row.className = "flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm";
+        row.innerHTML = `
+          <div class="min-w-0 flex-1">
+            <p class="truncate font-bold text-[#12355b]">${escapeHTML(record.title)}</p>
+            <p class="text-xs text-slate-500">${escapeHTML(record.type)} · urutan ${record.order_index} · ${record.published ? "Publik" : "Draf"}</p>
+          </div>
+          <button class="edit-row rounded-lg bg-[#e7f1f8] px-2.5 py-1.5 text-sm font-bold text-[#12355b]" data-id="${record.__backendId}">Edit</button>
+          <button class="delete-row rounded-lg bg-[#ffe2dd] px-2.5 py-1.5 text-sm font-bold text-[#a92d21]" data-id="${record.__backendId}">Hapus</button>`;
+        list.appendChild(row);
+      });
+
+      list.querySelectorAll(".edit-row").forEach(button => button.onclick = () => startEdit(button.dataset.id));
+      list.querySelectorAll(".delete-row").forEach(button => {
+        button.onclick = () => {
+          deleteTarget = button.dataset.id;
+          $("#delete-modal").classList.remove("hidden");
+        };
+      });
+    }
+
+    function resetForm() {
+      $("#content-form").reset();
+      $("#record-id").value = "";
+      $("#record-order").value = backendRecords.length + 1;
+      fillTopicsSelect();
+    }
+
+    function startEdit(id) {
+      const record = backendRecords.find(item => item.__backendId === id);
+      if (!record || !teacherMode) return;
+      $("#record-id").value = record.__backendId;
+      $("#record-type").value = record.type;
+      fillTopicsSelect();
+      $("#record-topic").value = record.topic_id || "";
+      $("#record-title").value = record.title || "";
+      $("#record-content").value = record.content || "";
+      $("#record-order").value = record.order_index || 1;
+      $("#record-published").checked = !!record.published;
+      $("#content-form").scrollIntoView({ behavior: "smooth" });
+    }
+
+    // ----------------------------------------------------
+    // OPERASI KRUD REALTIME DENGAN FIREBASE
+    // ----------------------------------------------------
+    function initialize() {
+      setSave("Memuat dari Firebase…");
+      
+      db.ref("records").on("value", (snapshot) => {
+        clearTimeout(initialTimer);
+        const data = snapshot.val();
+        backendRecords = [];
+        
+        if (data) {
+          Object.keys(data).forEach((key) => {
+            backendRecords.push({
+              __backendId: key,
+              ...data[key]
+            });
+          });
+        }
+        
+        setSave("Terhubung ke Firebase");
+        renderDashboard();
+        if (teacherMode) renderManager();
+      }, (error) => {
+        clearTimeout(initialTimer);
+        setSave("Gagal terhubung ke Firebase.");
+        console.error(error);
+      });
+    }
+
+    async function saveRecord(event) {
+      event.preventDefault();
+      if (!teacherMode) return;
+
+      const control = event.submitter;
+      const content = $("#record-content").value.trim();
+
+      try {
+        JSON.parse(content);
+      } catch {
+        status("Isi harus berupa JSON yang valid. Gunakan tanda kutip ganda pada nama kolom.", "error");
+        return;
+      }
+
+      const recordId = $("#record-id").value;
+      const record = {
+        type: $("#record-type").value,
+        topic_id: $("#record-topic").value,
+        title: $("#record-title").value.trim(),
+        content,
+        order_index: Number($("#record-order").value) || 1,
+        published: $("#record-published").checked,
+        updated_at: new Date().toISOString()
+      };
+
+      control.disabled = true;
+      try {
+        if (recordId) {
+          await db.ref("records/" + recordId).update(record);
+          status("Perubahan berhasil diperbarui di Firebase!");
+        } else {
+          await db.ref("records").push(record);
+          status("Konten baru berhasil disimpan ke Firebase!");
+        }
+        resetForm();
+      } catch (err) {
+        status("Gagal menyimpan: " + err.message, "error");
+      } finally {
+        control.disabled = false;
+      }
+    }
+
+    async function removeRecord() {
+      if (!deleteTarget || !teacherMode) {
+        $("#delete-modal").classList.add("hidden");
+        return;
+      }
+
+      const control = $("#confirm-delete");
+      control.disabled = true;
+      try {
+        await db.ref("records/" + deleteTarget).remove();
+        status("Konten berhasil dihapus.");
+        $("#delete-modal").classList.add("hidden");
+      } catch (err) {
+        status("Gagal menghapus konten: " + err.message, "error");
+      } finally {
+        control.disabled = false;
+        deleteTarget = null;
+      }
+    }
+
+    async function addExamples() {
+      if (!teacherMode) return;
+      if (backendRecords.length !== 0) {
+        status("Reset contoh hanya tersedia saat daftar konten kosong agar tidak duplikat.", "error");
+        return;
+      }
+
+      const button = $("#reset-content");
+      button.disabled = true;
+      try {
+        for (const record of sampleRows()) {
+          await db.ref("records").push(record);
+        }
+        status("Konten contoh berhasil ditambahkan ke Firebase.");
+      } catch (err) {
+        status("Gagal menambahkan contoh: " + err.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    function enterTeacherMode() {
+      teacherMode = true;
+      document.body.classList.add("teacher-mode");
+      $("#teacher-confirm-modal").classList.add("hidden");
+      $("#teacher-access-modal").classList.add("hidden");
+      $("#teacher-code").value = "";
+      $("#teacher-code-error").classList.add("hidden");
+      renderManager();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function lockTeacherMode() {
+      teacherMode = false;
+      deleteTarget = null;
+      document.body.classList.remove("teacher-mode");
+      $("#edit-panel").classList.add("hidden");
+      $("#delete-modal").classList.add("hidden");
+      $("#teacher-confirm-modal").classList.add("hidden");
+      $("#teacher-access-modal").classList.add("hidden");
+      $("#teacher-code").value = "";
+      $("#teacher-code-error").classList.add("hidden");
+      showDashboard();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function sampleRows() {
+      return [
+        ["topic","algoritma","Algoritma dan Pemrograman",1,{"summary":"Pelajari cara menyusun instruksi yang jelas agar komputer dapat menyelesaikan masalah.","objective":"Menjelaskan algoritma, pseudocode, flowchart, dan dasar pemrograman.","time":"80 menit"}],
+        ["topic","jaringan","Jaringan Komputer dan Internet",2,{"summary":"Kenali perangkat jaringan, koneksi internet, dan kebiasaan digital yang aman.","objective":"Memahami cara perangkat terhubung dan bertukar informasi.","time":"75 menit"}],
+        ["topic","data","Data dan Dampak Sosial Informatika",3,{"summary":"Gunakan data secara bijak sambil menjaga privasi dan etika digital.","objective":"Menganalisis data, jejak digital, serta dampak teknologi.","time":"70 menit"}],
+        ["topic","sistem","Sistem Komputer",4,{"summary":"Kenali komponen yang membuat sebuah komputer bekerja sebagai satu sistem.","objective":"Membedakan perangkat keras, perangkat lunak, dan sistem operasi.","time":"75 menit"}]
+      ].map(([type,topic_id,title,order_index,content]) => ({
+        type, topic_id, title, content: JSON.stringify(content), order_index, published: true, updated_at: new Date().toISOString()
+      }));
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.lucide) lucide.createIcons();
+      initialize();
+
+      $("#topic-search").oninput = renderDashboard;
+      $("#clear-search").onclick = () => {
+        $("#topic-search").value = "";
+        renderDashboard();
+      };
+
+      $("#dashboard-nav").onclick = showDashboard;
+      $("#back-dashboard").onclick = showDashboard;
+      $("#hero-start-button").onclick = () => {
+        const firstTopic = topics()[0];
+        if (firstTopic) openTopic(firstTopic.topic_id);
+      };
+
+      $("#teacher-login-button").onclick = () => {
+        $("#teacher-access-modal").classList.remove("hidden");
+        $("#teacher-code").focus();
+      };
+
+      $("#teacher-cancel-button").onclick = () => {
+        $("#teacher-access-modal").classList.add("hidden");
+        $("#teacher-code").value = "";
+        $("#teacher-code-error").classList.add("hidden");
+      };
+
+      $("#teacher-access-form").onsubmit = event => {
+        event.preventDefault();
+        if ($("#teacher-code").value === teacherAccessCode) {
+          $("#teacher-access-modal").classList.add("hidden");
+          $("#teacher-confirm-modal").classList.remove("hidden");
+          $("#teacher-code-error").classList.add("hidden");
+        } else {
+          $("#teacher-code-error").classList.remove("hidden");
+          $("#teacher-code").focus();
+        }
+      };
+
+      $("#cancel-teacher-confirm").onclick = () => {
+        $("#teacher-confirm-modal").classList.add("hidden");
+        $("#teacher-code").value = "";
+      };
+
+      $("#activate-teacher-mode").onclick = enterTeacherMode;
+      $("#teacher-tools-button").onclick = () => {
+        if (!teacherMode) return;
+        $("#edit-panel").classList.remove("hidden");
+        renderManager();
+        resetForm();
+      };
+
+      $("#close-edit-panel").onclick = () => $("#edit-panel").classList.add("hidden");
+      $("#return-student-button").onclick = lockTeacherMode;
+      $("#lock-teacher-button").onclick = lockTeacherMode;
+      $("#content-form").onsubmit = saveRecord;
+      $("#cancel-edit").onclick = resetForm;
+      $("#confirm-delete").onclick = removeRecord;
+      $("#cancel-delete").onclick = () => {
+        deleteTarget = null;
+        $("#delete-modal").classList.add("hidden");
+      };
+      $("#reset-content").onclick = addExamples;
+    });
+  </script>
+</body>
+</html>
