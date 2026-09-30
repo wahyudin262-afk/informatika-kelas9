@@ -138,7 +138,7 @@
                     <div class="relative z-10 max-w-2xl">
                         <span class="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full inline-block mb-3 backdrop-blur-sm">Selamat Datang!</span>
                         <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Portal Pembelajaran Informatika Kelas 9</h2>
-                        <p class="mt-2 text-indigo-100 text-sm sm:text-base">Eksplorasi konsep analisis data, berpikir komputasional, jaringan komputer, media video, hingga pemrograman secara interaktif.</p>
+                        <p class="mt-2 text-indigo-100 text-sm sm:text-base">Eksplorasi konsep analisis data, berpikir komputasional, jaringan komputer, galeri video, hingga latihan online interaktif.</p>
                     </div>
                     <i class="fa-solid fa-laptop-code absolute -right-6 -bottom-6 text-9xl text-white/10 pointer-events-none"></i>
                 </div>
@@ -180,15 +180,14 @@
 
                 <!-- Shortcuts Section -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Video Media Shortcut -->
                     <div class="bg-red-50 border border-red-200 rounded-xl p-5 flex items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center text-xl flex-shrink-0">
                                 <i class="fa-solid fa-play"></i>
                             </div>
                             <div>
-                                <h3 class="font-bold text-slate-800 text-sm">Video Pembelajaran</h3>
-                                <p class="text-xs text-slate-600">Saksikan video tutorial penjelas materi bab ini.</p>
+                                <h3 class="font-bold text-slate-800 text-sm">Galeri Video Pembelajaran</h3>
+                                <p class="text-xs text-slate-600">Saksikan kumpulan video tutorial penjelas materi.</p>
                             </div>
                         </div>
                         <button onclick="switchTab('video-learning')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition whitespace-nowrap">
@@ -196,15 +195,14 @@
                         </button>
                     </div>
 
-                    <!-- Google Form Practice Shortcut -->
                     <div class="bg-purple-50 border border-purple-200 rounded-xl p-5 flex items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-purple-600 text-white rounded-lg flex items-center justify-center text-xl flex-shrink-0">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </div>
                             <div>
-                                <h3 class="font-bold text-slate-800 text-sm">Latihan Online</h3>
-                                <p class="text-xs text-slate-600">Kerjakan soal latihan resmi dari guru.</p>
+                                <h3 class="font-bold text-slate-800 text-sm">Daftar Latihan Online</h3>
+                                <p class="text-xs text-slate-600">Pilih dan kerjakan tugas/kuis dari guru.</p>
                             </div>
                         </div>
                         <button onclick="switchTab('gform-practice')" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition whitespace-nowrap">
@@ -214,7 +212,7 @@
                 </div>
             </div>
 
-            <!-- TAB 1: MODUL 1 - ANALISIS DATA -->
+            <!-- TAB 1: MODUL 1 -->
             <div id="tab-modul1" class="tab-content hidden space-y-6">
                 <div class="border-b border-slate-200 pb-4">
                     <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Modul Pembelajaran 1</span>
@@ -232,7 +230,6 @@
                     </p>
                 </div>
 
-                <!-- Interactive Canvas Section -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
                     <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
                         <i class="fa-solid fa-table text-emerald-600"></i>
@@ -334,46 +331,60 @@
                 </div>
             </div>
 
-            <!-- TAB: VIDEO PEMBELAJARAN (Embedded Video Player) -->
+            <!-- TAB: GALERI VIDEO PEMBELAJARAN (MULTI VIDEO PLAYLIST) -->
             <div id="tab-video-learning" class="tab-content hidden space-y-6">
                 <div class="border-b border-slate-200 pb-4">
-                    <span class="text-xs font-semibold text-red-600 uppercase tracking-wider">Media Pembelajaran Visual</span>
-                    <h2 id="video-display-title" class="text-2xl font-bold text-slate-900 mt-1">Video Tutorial Informatika</h2>
-                    <p class="text-sm text-slate-500 mt-1">Simak materi penjelasan video di bawah ini untuk memperdalam pemahaman konsep.</p>
+                    <span class="text-xs font-semibold text-red-600 uppercase tracking-wider">Galeri Media Pembelajaran</span>
+                    <h2 id="student-video-active-title" class="text-2xl font-bold text-slate-900 mt-1">Pilih Video Pembelajaran</h2>
+                    <p class="text-sm text-slate-500 mt-1">Pilih dan putar materi video pembelajaran yang tersedia di bawah ini.</p>
                 </div>
 
-                <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <!-- Embedded Video Container -->
+                <!-- Active Embedded Video Player -->
+                <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <div id="video-frame-container" class="relative w-full pb-[56.25%] h-0 rounded-xl overflow-hidden bg-black hidden shadow-md">
                         <iframe id="video-iframe" class="absolute top-0 left-0 w-full h-full border-0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                     </div>
 
-                    <!-- Placeholder Video (When no video link configured) -->
                     <div id="video-placeholder" class="text-center p-8 max-w-md mx-auto">
                         <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
                             <i class="fa-solid fa-video-slash"></i>
                         </div>
                         <h3 class="font-bold text-slate-800 text-lg">Belum Ada Video Pembelajaran</h3>
                         <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                            Materi video pembelajaran belum disematkan oleh guru. Jika Anda pengajar, masuk ke <span class="font-semibold text-amber-700">Mode Pengajar</span> lalu masukkan tautan YouTube atau Google Drive pada menu Pengaturan Guru.
+                            Belum ada materi video yang ditambahkan oleh guru. Masuk ke <span class="font-semibold text-amber-700">Mode Pengajar</span> untuk menambahkan tautan video baru.
                         </p>
                     </div>
                 </div>
+
+                <!-- Playlist Grid (Multiple Videos List) -->
+                <div id="video-playlist-section" class="hidden space-y-3">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-list-ul text-red-600"></i>
+                        Daftar Putar Video Pembelajaran
+                    </h3>
+                    <div id="video-playlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+                </div>
             </div>
 
-            <!-- TAB: LATIHAN GOOGLE FORM -->
+            <!-- TAB: LATIHAN GOOGLE FORM (MULTI FORM SELECTOR) -->
             <div id="tab-gform-practice" class="tab-content hidden space-y-6">
-                <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <span class="text-xs font-semibold text-purple-600 uppercase tracking-wider">Lembar Evaluasi Siswa</span>
                         <h2 class="text-2xl font-bold text-slate-900 mt-1">Latihan Soal Online</h2>
-                        <p class="text-sm text-slate-500 mt-1">Silakan selesaikan tugas/latihan yang dihubungkan melalui Google Form berikut.</p>
+                        <p class="text-sm text-slate-500 mt-1">Pilih materi tugas/latihan yang ingin dikerjakan di bawah ini.</p>
                     </div>
                     <div id="gform-external-link-btn" class="hidden">
-                        <a id="gform-direct-url" href="#" target="_blank" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs px-4 py-2 rounded-lg font-medium transition">
+                        <a id="gform-direct-url" href="#" target="_blank" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs px-4 py-2 rounded-lg font-medium transition whitespace-nowrap">
                             <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka di Tab Baru
                         </a>
                     </div>
+                </div>
+
+                <!-- Form Selector Buttons / Dropdown -->
+                <div id="gform-selector-container" class="hidden bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Pilih Tugas / Kuis:</label>
+                    <div id="gform-buttons-list" class="flex flex-wrap gap-2"></div>
                 </div>
 
                 <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm min-h-[500px] flex flex-col items-center justify-center">
@@ -387,7 +398,7 @@
                         </div>
                         <h3 class="font-bold text-slate-800 text-lg">Belum Ada Tautan Google Form</h3>
                         <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                            Bahan latihan belum diset. Guru dapat menambahkan tautan pada menu Pengaturan Guru.
+                            Bahan latihan belum ditambahkan. Masuk ke <span class="font-semibold text-amber-700">Mode Pengajar</span> untuk memasukkan tautan Google Form.
                         </p>
                     </div>
                 </div>
@@ -397,57 +408,77 @@
             <div id="tab-teacher-settings" class="tab-content hidden space-y-6">
                 <div class="border-b border-slate-200 pb-4">
                     <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Panel Pengelola</span>
-                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Pengaturan & Konfigurasi Pengajar</h2>
-                    <p class="text-sm text-slate-500 mt-1">Kelola tautan media video, Google Form, keamanan PIN, dan reset data.</p>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Pengaturan & Kelola Pembelajaran</h2>
+                    <p class="text-sm text-slate-500 mt-1">Kelola daftar video pembelajaran, tautan Google Form, PIN keamanan, dan reset data.</p>
                 </div>
 
-                <!-- 1. Video Learning Config (YouTube / Google Drive) -->
+                <!-- 1. MULTI-VIDEO MANAGER -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
                         <i class="fa-solid fa-film text-red-600"></i>
-                        Konfigurasi Video Pembelajaran (YouTube / Google Drive)
+                        Tambah & Kelola Video Pembelajaran
                     </h3>
                     <p class="text-xs text-slate-600">
-                        Masukkan tautan video dari <strong>YouTube</strong> (contoh: <code>https://www.youtube.com/watch?v=...</code>) atau dari <strong>Google Drive</strong> (contoh: <code>https://drive.google.com/file/d/.../view</code>).
+                        Anda dapat memasukkan lebih dari satu video. Mendukung tautan dari <strong>YouTube</strong> maupun <strong>Google Drive</strong>.
                     </p>
 
-                    <div class="space-y-3 pt-2">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Video / Topik:</label>
-                            <input id="input-video-title" type="text" placeholder="Contoh: Video Penjelasan Analisis Data Bab 1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan URL Video (YouTube / Drive):</label>
-                            <div class="flex flex-col sm:flex-row gap-2">
-                                <input id="input-video-url" type="url" placeholder="Paste link YouTube / Google Drive di sini" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
-                                <button onclick="saveVideoUrl()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
-                                    <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Video
-                                </button>
+                    <div class="space-y-3 pt-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Video / Topik:</label>
+                                <input id="input-video-title" type="text" placeholder="Contoh: Bab 1 - Pengenalan Analisis Data" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan URL Video (YouTube / Google Drive):</label>
+                                <input id="input-video-url" type="url" placeholder="Paste link YouTube / Drive di sini" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
                             </div>
                         </div>
+                        <button onclick="addNewVideoItem()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
+                            <i class="fa-solid fa-plus mr-1"></i> Tambahkan Video Ke Daftar
+                        </button>
+                    </div>
+
+                    <!-- List of Existing Videos -->
+                    <div class="pt-2">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Daftar Video Aktif:</h4>
+                        <div id="teacher-video-list" class="space-y-2"></div>
                     </div>
                 </div>
 
-                <!-- 2. Google Form Config -->
+                <!-- 2. MULTI-GOOGLE FORM MANAGER -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
                         <i class="fa-brands fa-google text-purple-600"></i>
-                        Konfigurasi Link Google Form Latihan Siswa
+                        Tambah & Kelola Link Google Form / Latihan
                     </h3>
+                    <p class="text-xs text-slate-600">
+                        Anda dapat menambahkan beberapa Google Form untuk latihan per modul atau ujian.
+                    </p>
 
-                    <div class="space-y-3 pt-2">
-                        <label class="block text-xs font-semibold text-slate-700">Tautan Google Form (URL):</label>
-                        <div class="flex flex-col sm:flex-row gap-2">
-                            <input id="input-gform-url" type="url" placeholder="https://docs.google.com/forms/d/e/.../viewform" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
-                            <button onclick="saveGoogleFormUrl()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
-                                <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Link Form
-                            </button>
+                    <div class="space-y-3 pt-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Latihan / Kuis:</label>
+                                <input id="input-gform-title" type="text" placeholder="Contoh: Kuis Ulangan Harian Bab 1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan URL Google Form:</label>
+                                <input id="input-gform-url" type="url" placeholder="https://docs.google.com/forms/d/e/.../viewform" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                            </div>
                         </div>
+                        <button onclick="addNewGFormItem()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
+                            <i class="fa-solid fa-plus mr-1"></i> Tambahkan Form Ke Daftar
+                        </button>
+                    </div>
+
+                    <!-- List of Existing Forms -->
+                    <div class="pt-2">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Daftar Latihan Aktif:</h4>
+                        <div id="teacher-gform-list" class="space-y-2"></div>
                     </div>
                 </div>
 
-                <!-- 3. Security Config (Change PIN) -->
+                <!-- 3. SECURITY CONFIG (CHANGE PIN) -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
                         <i class="fa-solid fa-key text-amber-600"></i>
@@ -469,14 +500,14 @@
                     </button>
                 </div>
 
-                <!-- 4. Reset System Data -->
+                <!-- 4. RESET SYSTEM DATA -->
                 <div class="bg-white p-6 rounded-xl border border-red-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-red-700 text-lg flex items-center gap-2">
                         <i class="fa-solid fa-triangle-exclamation"></i>
-                        Reset Data Progres Pembelajaran
+                        Reset Data Progres & Pengaturan
                     </h3>
                     <button onclick="resetAllData()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">
-                        Reset Seluruh Data
+                        Reset Seluruh Data Lokal
                     </button>
                 </div>
             </div>
@@ -510,6 +541,14 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         let isTeacherMode = false;
+        
+        // Data lists loaded from LocalStorage or initialized with empty arrays
+        let videoList = JSON.parse(localStorage.getItem('video_list')) || [];
+        let activeVideoId = videoList.length > 0 ? videoList[0].id : null;
+
+        let gformList = JSON.parse(localStorage.getItem('gform_list')) || [];
+        let activeGFormId = gformList.length > 0 ? gformList[0].id : null;
+
         let chartData = [
             { label: 'Januari', value: 45 },
             { label: 'Februari', value: 70 },
@@ -521,8 +560,10 @@
             initTableData();
             renderCanvasChart();
             renderGrid();
-            loadGoogleFormUrl();
-            loadVideoUrl();
+            renderVideoUI();
+            renderGFormUI();
+            renderTeacherVideoList();
+            renderTeacherGFormList();
             updateProgress();
         });
 
@@ -590,112 +631,240 @@
             }
         }
 
-        // VIDEO LEARNING EMBEDDING (YouTube / Google Drive)
+        // URL PARSER (YouTube / Google Drive)
         function parseVideoEmbedUrl(url) {
             if (!url) return '';
-            
-            // YouTube Handler (watch?v= or youtu.be/)
             const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-            if (ytMatch && ytMatch[1]) {
-                return `https://www.youtube.com/embed/${ytMatch[1]}`;
-            }
+            if (ytMatch && ytMatch[1]) return `https://www.youtube.com/embed/${ytMatch[1]}`;
 
-            // Google Drive Video Handler (/file/d/FILE_ID/view)
             const gdMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
-            if (gdMatch && gdMatch[1]) {
-                return `https://drive.google.com/file/d/${gdMatch[1]}/preview`;
-            }
+            if (gdMatch && gdMatch[1]) return `https://drive.google.com/file/d/${gdMatch[1]}/preview`;
 
             return url;
         }
 
-        function saveVideoUrl() {
+        // MULTI-VIDEO LOGIC
+        function addNewVideoItem() {
+            const title = document.getElementById('input-video-title').value.trim();
             const rawUrl = document.getElementById('input-video-url').value.trim();
-            const title = document.getElementById('input-video-title').value.trim() || 'Video Tutorial Informatika';
 
-            if (rawUrl) {
-                const embedUrl = parseVideoEmbedUrl(rawUrl);
-                localStorage.setItem('video_embed_url', embedUrl);
-                localStorage.setItem('video_raw_url', rawUrl);
-                localStorage.setItem('video_title', title);
-                loadVideoUrl();
-                alert('Materi video pembelajaran berhasil disimpan!');
-            } else {
-                localStorage.removeItem('video_embed_url');
-                localStorage.removeItem('video_raw_url');
-                localStorage.removeItem('video_title');
-                loadVideoUrl();
-                alert('Tautan video telah dihapus.');
+            if (!title || !rawUrl) {
+                alert('Silakan lengkapi Judul dan URL Video!');
+                return;
+            }
+
+            const newItem = {
+                id: Date.now(),
+                title: title,
+                url: rawUrl,
+                embedUrl: parseVideoEmbedUrl(rawUrl)
+            };
+
+            videoList.push(newItem);
+            localStorage.setItem('video_list', JSON.stringify(videoList));
+
+            if (!activeVideoId) activeVideoId = newItem.id;
+
+            document.getElementById('input-video-title').value = '';
+            document.getElementById('input-video-url').value = '';
+
+            renderVideoUI();
+            renderTeacherVideoList();
+            alert('Video berhasil ditambahkan ke daftar!');
+        }
+
+        function deleteVideoItem(id) {
+            if (confirm('Hapus video ini dari daftar?')) {
+                videoList = videoList.filter(item => item.id !== id);
+                localStorage.setItem('video_list', JSON.stringify(videoList));
+                if (activeVideoId === id) {
+                    activeVideoId = videoList.length > 0 ? videoList[0].id : null;
+                }
+                renderVideoUI();
+                renderTeacherVideoList();
             }
         }
 
-        function loadVideoUrl() {
-            const savedEmbedUrl = localStorage.getItem('video_embed_url');
-            const savedRawUrl = localStorage.getItem('video_raw_url');
-            const savedTitle = localStorage.getItem('video_title') || 'Video Tutorial Informatika';
+        function setActiveVideo(id) {
+            activeVideoId = id;
+            renderVideoUI();
+        }
 
+        function renderVideoUI() {
             const frameContainer = document.getElementById('video-frame-container');
             const placeholder = document.getElementById('video-placeholder');
             const iframe = document.getElementById('video-iframe');
-            const displayTitle = document.getElementById('video-display-title');
-            
-            const teacherUrlInput = document.getElementById('input-video-url');
-            const teacherTitleInput = document.getElementById('input-video-title');
+            const displayTitle = document.getElementById('student-video-active-title');
+            const playlistSection = document.getElementById('video-playlist-section');
+            const playlistGrid = document.getElementById('video-playlist-grid');
 
-            if (teacherUrlInput && savedRawUrl) teacherUrlInput.value = savedRawUrl;
-            if (teacherTitleInput && savedTitle) teacherTitleInput.value = savedTitle;
-            if (displayTitle) displayTitle.innerText = savedTitle;
+            if (videoList.length === 0) {
+                frameContainer.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                playlistSection.classList.add('hidden');
+                iframe.src = '';
+                displayTitle.innerText = 'Pilih Video Pembelajaran';
+                return;
+            }
 
-            if (savedEmbedUrl) {
-                if (frameContainer) frameContainer.classList.remove('hidden');
-                if (placeholder) placeholder.classList.add('hidden');
-                if (iframe) iframe.src = savedEmbedUrl;
-            } else {
-                if (frameContainer) frameContainer.classList.add('hidden');
-                if (placeholder) placeholder.classList.remove('hidden');
-                if (iframe) iframe.src = '';
+            const activeVideo = videoList.find(v => v.id === activeVideoId) || videoList[0];
+            frameContainer.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            iframe.src = activeVideo.embedUrl;
+            displayTitle.innerText = activeVideo.title;
+
+            // Render Playlist
+            playlistSection.classList.remove('hidden');
+            playlistGrid.innerHTML = '';
+            videoList.forEach((item, index) => {
+                const isActive = item.id === activeVideo.id;
+                const card = document.createElement('div');
+                card.onclick = () => setActiveVideo(item.id);
+                card.className = `p-3 rounded-xl border transition cursor-pointer flex items-center justify-between gap-3 ${isActive ? 'bg-red-50 border-red-300 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'}`;
+                card.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <div class="w-8 h-8 rounded-full ${isActive ? 'bg-red-600 text-white' : 'bg-slate-100 text-slate-600'} flex items-center justify-center text-xs font-bold flex-shrink-0">
+                            ${isActive ? '<i class="fa-solid fa-play"></i>' : index + 1}
+                        </div>
+                        <div class="truncate">
+                            <h4 class="text-xs font-bold text-slate-800 truncate">${item.title}</h4>
+                            <p class="text-[10px] text-slate-500">${isActive ? 'Sedang Diputar' : 'Klik untuk memutar'}</p>
+                        </div>
+                    </div>
+                `;
+                playlistGrid.appendChild(card);
+            });
+        }
+
+        function renderTeacherVideoList() {
+            const container = document.getElementById('teacher-video-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (videoList.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada video tersimpan.</p>';
+                return;
+            }
+
+            videoList.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs';
+                div.innerHTML = `
+                    <div class="flex items-center gap-2 truncate pr-2">
+                        <span class="font-bold text-slate-500">${idx + 1}.</span>
+                        <span class="font-semibold text-slate-800 truncate">${item.title}</span>
+                    </div>
+                    <button onclick="deleteVideoItem(${item.id})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // MULTI-GOOGLE FORM LOGIC
+        function addNewGFormItem() {
+            const title = document.getElementById('input-gform-title').value.trim();
+            const url = document.getElementById('input-gform-url').value.trim();
+
+            if (!title || !url) {
+                alert('Silakan lengkapi Judul dan URL Google Form!');
+                return;
+            }
+
+            const newItem = { id: Date.now(), title, url };
+            gformList.push(newItem);
+            localStorage.setItem('gform_list', JSON.stringify(gformList));
+
+            if (!activeGFormId) activeGFormId = newItem.id;
+
+            document.getElementById('input-gform-title').value = '';
+            document.getElementById('input-gform-url').value = '';
+
+            renderGFormUI();
+            renderTeacherGFormList();
+            alert('Latihan berhasil ditambahkan!');
+        }
+
+        function deleteGFormItem(id) {
+            if (confirm('Hapus latihan ini dari daftar?')) {
+                gformList = gformList.filter(item => item.id !== id);
+                localStorage.setItem('gform_list', JSON.stringify(gformList));
+                if (activeGFormId === id) {
+                    activeGFormId = gformList.length > 0 ? gformList[0].id : null;
+                }
+                renderGFormUI();
+                renderTeacherGFormList();
             }
         }
 
-        // GOOGLE FORM MANAGEMENT
-        function saveGoogleFormUrl() {
-            const urlInput = document.getElementById('input-gform-url').value.trim();
-            if (urlInput) {
-                localStorage.setItem('gform_url', urlInput);
-                loadGoogleFormUrl();
-                alert('Tautan Google Form berhasil disimpan!');
-            } else {
-                localStorage.removeItem('gform_url');
-                loadGoogleFormUrl();
-                alert('Tautan Google Form dikosongkan.');
-            }
+        function setActiveGForm(id) {
+            activeGFormId = id;
+            renderGFormUI();
         }
 
-        function loadGoogleFormUrl() {
-            const savedUrl = localStorage.getItem('gform_url');
+        function renderGFormUI() {
             const frameContainer = document.getElementById('gform-frame-container');
             const placeholder = document.getElementById('gform-placeholder');
             const iframe = document.getElementById('gform-iframe');
             const externalBtn = document.getElementById('gform-external-link-btn');
             const directUrl = document.getElementById('gform-direct-url');
-            const teacherInput = document.getElementById('input-gform-url');
+            const selectorContainer = document.getElementById('gform-selector-container');
+            const buttonsList = document.getElementById('gform-buttons-list');
 
-            if (teacherInput && savedUrl) teacherInput.value = savedUrl;
-
-            if (savedUrl) {
-                if (frameContainer) frameContainer.classList.remove('hidden');
-                if (placeholder) placeholder.classList.add('hidden');
-                if (iframe) iframe.src = savedUrl;
-                if (externalBtn) externalBtn.classList.remove('hidden');
-                if (directUrl) directUrl.href = savedUrl;
-            } else {
-                if (frameContainer) frameContainer.classList.add('hidden');
-                if (placeholder) placeholder.classList.remove('hidden');
-                if (externalBtn) externalBtn.classList.add('hidden');
+            if (gformList.length === 0) {
+                frameContainer.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+                externalBtn.classList.add('hidden');
+                selectorContainer.classList.add('hidden');
+                iframe.src = '';
+                return;
             }
+
+            const activeForm = gformList.find(f => f.id === activeGFormId) || gformList[0];
+            frameContainer.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            iframe.src = activeForm.url;
+
+            externalBtn.classList.remove('hidden');
+            directUrl.href = activeForm.url;
+
+            // Render Selector Buttons
+            selectorContainer.classList.remove('hidden');
+            buttonsList.innerHTML = '';
+            gformList.forEach((item) => {
+                const isActive = item.id === activeForm.id;
+                const btn = document.createElement('button');
+                btn.onclick = () => setActiveGForm(item.id);
+                btn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold transition ${isActive ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`;
+                btn.innerText = item.title;
+                buttonsList.appendChild(btn);
+            });
         }
 
-        // SECURITY & DATA MANAGEMENT
+        function renderTeacherGFormList() {
+            const container = document.getElementById('teacher-gform-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (gformList.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada latihan tersimpan.</p>';
+                return;
+            }
+
+            gformList.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs';
+                div.innerHTML = `
+                    <div class="flex items-center gap-2 truncate pr-2">
+                        <span class="font-bold text-slate-500">${idx + 1}.</span>
+                        <span class="font-semibold text-slate-800 truncate">${item.title}</span>
+                    </div>
+                    <button onclick="deleteGFormItem(${item.id})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // SECURITY & DATA RESET
         function saveNewPin() {
             const newPin = document.getElementById('input-new-pin').value;
             const confirmPin = document.getElementById('input-confirm-pin').value;
@@ -723,7 +892,7 @@
             }
         }
 
-        // INTERACTIVE CANVAS ENGINE & UTILS
+        // SIMULATORS & CANVAS
         function initTableData() {
             const tbody = document.getElementById('chart-data-tbody');
             if (!tbody) return;
@@ -806,7 +975,6 @@
             }
         }
 
-        // SIMULATORS
         function renderGrid() {
             const grid = document.getElementById('grid-container');
             if (!grid) return;
