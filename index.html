@@ -8,6 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -40,12 +44,8 @@
             <!-- Global Status & Mode Switcher -->
             <div class="flex items-center space-x-4">
                 <div class="hidden lg:flex items-center space-x-2 bg-indigo-950/60 px-3 py-1.5 rounded-full text-xs">
-                    <i class="fa-solid fa-chart-line text-emerald-400"></i>
-                    <span>Progres:</span>
-                    <div class="w-24 bg-indigo-800 rounded-full h-2 overflow-hidden">
-                        <div id="global-progress-bar" class="bg-emerald-400 h-full w-0 transition-all duration-300"></div>
-                    </div>
-                    <span id="global-progress-text" class="font-bold text-emerald-400">0%</span>
+                    <i class="fa-solid fa-signal text-emerald-400"></i>
+                    <span id="db-status-text" class="text-emerald-400 font-semibold">Tersambung Cloud</span>
                 </div>
 
                 <!-- Mode Indicator Badge -->
@@ -122,7 +122,6 @@
                 </nav>
             </div>
 
-            <!-- Footer Sidebar -->
             <div class="p-4 border-t border-slate-200 bg-slate-50 text-xs text-slate-500">
                 <p class="font-medium text-slate-700">Kurikulum Merdeka 2026</p>
                 <p>Informatika Kelas IX SMP/MTs</p>
@@ -143,42 +142,6 @@
                     <i class="fa-solid fa-laptop-code absolute -right-6 -bottom-6 text-9xl text-white/10 pointer-events-none"></i>
                 </div>
 
-                <!-- Modul Overview Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div onclick="switchTab('modul1')" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group">
-                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-chart-pie"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 group-hover:text-blue-600 transition">Modul 1</h3>
-                        <p class="text-xs text-slate-500 mt-1">Analisis Data & Chart</p>
-                    </div>
-
-                    <div onclick="switchTab('modul2')" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group">
-                        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-brain"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 group-hover:text-emerald-600 transition">Modul 2</h3>
-                        <p class="text-xs text-slate-500 mt-1">Berpikir Komputasional</p>
-                    </div>
-
-                    <div onclick="switchTab('modul3')" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group">
-                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-network-wired"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 group-hover:text-purple-600 transition">Modul 3</h3>
-                        <p class="text-xs text-slate-500 mt-1">Jaringan & Keamanan</p>
-                    </div>
-
-                    <div onclick="switchTab('modul4')" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition cursor-pointer group">
-                        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-code"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 group-hover:text-amber-600 transition">Modul 4</h3>
-                        <p class="text-xs text-slate-500 mt-1">Algoritma Pemrograman</p>
-                    </div>
-                </div>
-
-                <!-- Shortcuts Section -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-red-50 border border-red-200 rounded-xl p-5 flex items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
@@ -217,25 +180,9 @@
                 <div class="border-b border-slate-200 pb-4">
                     <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Modul Pembelajaran 1</span>
                     <h2 class="text-2xl font-bold text-slate-900 mt-1">Analisis Data & Visualisasi Diagram</h2>
-                    <p class="text-sm text-slate-500 mt-1">Memahami pemrosesan data mentah, penggunaan perkakas lembar kerja, serta pembuatannya dalam bentuk diagram visual.</p>
                 </div>
-
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-database text-blue-600"></i>
-                        1. Data Mentah vs Data Terstruktur
-                    </h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">
-                        Data mentah (*raw data*) adalah kumpulan fakta atau angka yang belum diolah sehingga sulit dibaca. Agar data dapat dianalisis, kita merapikannya menjadi **Data Terstruktur** dalam bentuk tabel berbaris dan berkolom.
-                    </p>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
-                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-table text-emerald-600"></i>
-                        2. Editor Tabel & Generator Diagram
-                    </h3>
-
+                    <h3 class="font-bold text-slate-800 text-lg">Generator Diagram Interactive</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm text-left border border-slate-200 rounded-lg overflow-hidden">
                             <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
@@ -248,25 +195,11 @@
                             <tbody id="chart-data-tbody" class="divide-y divide-slate-200"></tbody>
                         </table>
                     </div>
-
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="addTableRow()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-3 py-2 rounded-lg transition font-medium">
-                            <i class="fa-solid fa-plus mr-1"></i> Tambah Baris
-                        </button>
-                        <button onclick="renderCanvasChart()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2 rounded-lg transition font-medium">
-                            <i class="fa-solid fa-rotate mr-1"></i> Perbarui Diagram
-                        </button>
+                        <button onclick="addTableRow()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-3 py-2 rounded-lg transition font-medium"><i class="fa-solid fa-plus mr-1"></i> Tambah Baris</button>
+                        <button onclick="renderCanvasChart()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2 rounded-lg transition font-medium"><i class="fa-solid fa-rotate mr-1"></i> Perbarui Diagram</button>
                     </div>
-
                     <div class="pt-4 border-t border-slate-100">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                            <label class="text-sm font-semibold text-slate-700">Tipe Visualisasi Chart:</label>
-                            <select id="chart-type-select" onchange="renderCanvasChart()" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-medium">
-                                <option value="bar">Diagram Batang (Bar Chart)</option>
-                                <option value="pie">Diagram Lingkaran (Pie Chart)</option>
-                                <option value="line">Diagram Garis (Line Chart)</option>
-                            </select>
-                        </div>
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-center">
                             <canvas id="dataChartCanvas" width="500" height="280" class="max-w-full h-auto bg-white rounded shadow-sm border border-slate-200"></canvas>
                         </div>
@@ -331,15 +264,13 @@
                 </div>
             </div>
 
-            <!-- TAB: GALERI VIDEO PEMBELAJARAN (MULTI VIDEO PLAYLIST) -->
+            <!-- TAB: GALERI VIDEO PEMBELAJARAN -->
             <div id="tab-video-learning" class="tab-content hidden space-y-6">
                 <div class="border-b border-slate-200 pb-4">
-                    <span class="text-xs font-semibold text-red-600 uppercase tracking-wider">Galeri Media Pembelajaran</span>
+                    <span class="text-xs font-semibold text-red-600 uppercase tracking-wider">Galeri Media Pembelajaran Cloud</span>
                     <h2 id="student-video-active-title" class="text-2xl font-bold text-slate-900 mt-1">Pilih Video Pembelajaran</h2>
-                    <p class="text-sm text-slate-500 mt-1">Pilih dan putar materi video pembelajaran yang tersedia di bawah ini.</p>
                 </div>
 
-                <!-- Active Embedded Video Player -->
                 <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <div id="video-frame-container" class="relative w-full pb-[56.25%] h-0 rounded-xl overflow-hidden bg-black hidden shadow-md">
                         <iframe id="video-iframe" class="absolute top-0 left-0 w-full h-full border-0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
@@ -350,13 +281,12 @@
                             <i class="fa-solid fa-video-slash"></i>
                         </div>
                         <h3 class="font-bold text-slate-800 text-lg">Belum Ada Video Pembelajaran</h3>
-                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                            Belum ada materi video yang ditambahkan oleh guru. Masuk ke <span class="font-semibold text-amber-700">Mode Pengajar</span> untuk menambahkan tautan video baru.
+                        <p class="text-xs text-slate-500 mt-2">
+                            Masuk ke <span class="font-semibold text-amber-700">Mode Pengajar</span> untuk menambahkan tautan video baru dari Youtube/Google Drive.
                         </p>
                     </div>
                 </div>
 
-                <!-- Playlist Grid (Multiple Videos List) -->
                 <div id="video-playlist-section" class="hidden space-y-3">
                     <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
                         <i class="fa-solid fa-list-ul text-red-600"></i>
@@ -366,13 +296,12 @@
                 </div>
             </div>
 
-            <!-- TAB: LATIHAN GOOGLE FORM (MULTI FORM SELECTOR) -->
+            <!-- TAB: LATIHAN GOOGLE FORM -->
             <div id="tab-gform-practice" class="tab-content hidden space-y-6">
                 <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <span class="text-xs font-semibold text-purple-600 uppercase tracking-wider">Lembar Evaluasi Siswa</span>
                         <h2 class="text-2xl font-bold text-slate-900 mt-1">Latihan Soal Online</h2>
-                        <p class="text-sm text-slate-500 mt-1">Pilih materi tugas/latihan yang ingin dikerjakan di bawah ini.</p>
                     </div>
                     <div id="gform-external-link-btn" class="hidden">
                         <a id="gform-direct-url" href="#" target="_blank" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs px-4 py-2 rounded-lg font-medium transition whitespace-nowrap">
@@ -381,7 +310,6 @@
                     </div>
                 </div>
 
-                <!-- Form Selector Buttons / Dropdown -->
                 <div id="gform-selector-container" class="hidden bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
                     <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Pilih Tugas / Kuis:</label>
                     <div id="gform-buttons-list" class="flex flex-wrap gap-2"></div>
@@ -397,8 +325,8 @@
                             <i class="fa-solid fa-link-slash"></i>
                         </div>
                         <h3 class="font-bold text-slate-800 text-lg">Belum Ada Tautan Google Form</h3>
-                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
-                            Bahan latihan belum ditambahkan. Masuk ke <span class="font-semibold text-amber-700">Mode Pengajar</span> untuk memasukkan tautan Google Form.
+                        <p class="text-xs text-slate-500 mt-2">
+                            Masuk ke <span class="font-semibold text-amber-700">Mode Pengajar</span> untuk memasukkan tautan Google Form.
                         </p>
                     </div>
                 </div>
@@ -407,107 +335,79 @@
             <!-- TAB: PENGATURAN GURU -->
             <div id="tab-teacher-settings" class="tab-content hidden space-y-6">
                 <div class="border-b border-slate-200 pb-4">
-                    <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Panel Pengelola</span>
+                    <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Panel Pengelola Cloud</span>
                     <h2 class="text-2xl font-bold text-slate-900 mt-1">Pengaturan & Kelola Pembelajaran</h2>
-                    <p class="text-sm text-slate-500 mt-1">Kelola daftar video pembelajaran, tautan Google Form, PIN keamanan, dan reset data.</p>
                 </div>
 
-                <!-- 1. MULTI-VIDEO MANAGER -->
+                <!-- MULTI-VIDEO MANAGER -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-film text-red-600"></i>
-                        Tambah & Kelola Video Pembelajaran
+                        <i class="fa-solid fa-film text-red-600"></i> Tambah Video Pembelajaran Baru
                     </h3>
-                    <p class="text-xs text-slate-600">
-                        Anda dapat memasukkan lebih dari satu video. Mendukung tautan dari <strong>YouTube</strong> maupun <strong>Google Drive</strong>.
-                    </p>
-
                     <div class="space-y-3 pt-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Video / Topik:</label>
-                                <input id="input-video-title" type="text" placeholder="Contoh: Bab 1 - Pengenalan Analisis Data" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                                <input id="input-video-title" type="text" placeholder="Contoh: Bab 1 - Pengenalan Analisis Data" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan URL Video (YouTube / Google Drive):</label>
-                                <input id="input-video-url" type="url" placeholder="Paste link YouTube / Drive di sini" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+                                <input id="input-video-url" type="url" placeholder="Paste link YouTube / Drive di sini" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
                             </div>
                         </div>
-                        <button onclick="addNewVideoItem()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
-                            <i class="fa-solid fa-plus mr-1"></i> Tambahkan Video Ke Daftar
+                        <button onclick="addNewVideoItem()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition">
+                            <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Simpan Ke Cloud
                         </button>
                     </div>
 
-                    <!-- List of Existing Videos -->
                     <div class="pt-2">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Daftar Video Aktif:</h4>
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Daftar Video Aktif di Cloud:</h4>
                         <div id="teacher-video-list" class="space-y-2"></div>
                     </div>
                 </div>
 
-                <!-- 2. MULTI-GOOGLE FORM MANAGER -->
+                <!-- MULTI-GOOGLE FORM MANAGER -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-brands fa-google text-purple-600"></i>
-                        Tambah & Kelola Link Google Form / Latihan
+                        <i class="fa-brands fa-google text-purple-600"></i> Tambah Link Google Form / Latihan
                     </h3>
-                    <p class="text-xs text-slate-600">
-                        Anda dapat menambahkan beberapa Google Form untuk latihan per modul atau ujian.
-                    </p>
-
                     <div class="space-y-3 pt-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Latihan / Kuis:</label>
-                                <input id="input-gform-title" type="text" placeholder="Contoh: Kuis Ulangan Harian Bab 1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                                <input id="input-gform-title" type="text" placeholder="Contoh: Kuis Ulangan Harian Bab 1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan URL Google Form:</label>
-                                <input id="input-gform-url" type="url" placeholder="https://docs.google.com/forms/d/e/.../viewform" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                                <input id="input-gform-url" type="url" placeholder="https://docs.google.com/forms/d/e/.../viewform" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
                             </div>
                         </div>
-                        <button onclick="addNewGFormItem()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition whitespace-nowrap">
-                            <i class="fa-solid fa-plus mr-1"></i> Tambahkan Form Ke Daftar
+                        <button onclick="addNewGFormItem()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition">
+                            <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Simpan Ke Cloud
                         </button>
                     </div>
 
-                    <!-- List of Existing Forms -->
                     <div class="pt-2">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Daftar Latihan Aktif:</h4>
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Daftar Latihan Aktif di Cloud:</h4>
                         <div id="teacher-gform-list" class="space-y-2"></div>
                     </div>
                 </div>
 
-                <!-- 3. SECURITY CONFIG (CHANGE PIN) -->
+                <!-- SECURITY CONFIG (CHANGE PIN) -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-key text-amber-600"></i>
-                        Ubah PIN Keamanan Pengajar
+                        <i class="fa-solid fa-key text-amber-600"></i> Ubah PIN Keamanan Pengajar
                     </h3>
-
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">PIN Baru:</label>
-                            <input id="input-new-pin" type="password" placeholder="Masukkan PIN baru" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500">
+                            <input id="input-new-pin" type="password" placeholder="Masukkan PIN baru" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Konfirmasi PIN Baru:</label>
-                            <input id="input-confirm-pin" type="password" placeholder="Ulangi PIN baru" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-amber-500">
+                            <input id="input-confirm-pin" type="password" placeholder="Ulangi PIN baru" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
                         </div>
                     </div>
                     <button onclick="saveNewPin()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-5 py-2 rounded-lg transition">
                         Perbarui PIN Rahasia
-                    </button>
-                </div>
-
-                <!-- 4. RESET SYSTEM DATA -->
-                <div class="bg-white p-6 rounded-xl border border-red-200 shadow-sm space-y-4">
-                    <h3 class="font-bold text-red-700 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        Reset Data Progres & Pengaturan
-                    </h3>
-                    <button onclick="resetAllData()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">
-                        Reset Seluruh Data Lokal
                     </button>
                 </div>
             </div>
@@ -527,7 +427,7 @@
             </div>
 
             <div class="mt-5 space-y-4">
-                <input id="pin-input" type="password" placeholder="••••" maxlength="10" class="w-full text-center text-2xl tracking-widest font-mono border border-slate-300 rounded-xl py-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <input id="pin-input" type="password" placeholder="••••" maxlength="10" class="w-full text-center text-2xl tracking-widest font-mono border border-slate-300 rounded-xl py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <p id="pin-error-msg" class="text-xs text-red-500 text-center hidden font-medium">PIN tidak sesuai.</p>
 
                 <div class="grid grid-cols-2 gap-2 pt-2">
@@ -538,16 +438,29 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC & FIREBASE INTEGRATION -->
     <script>
-        let isTeacherMode = false;
-        
-        // Data lists loaded from LocalStorage or initialized with empty arrays
-        let videoList = JSON.parse(localStorage.getItem('video_list')) || [];
-        let activeVideoId = videoList.length > 0 ? videoList[0].id : null;
+        // KONFIGURASI FIREBASE OTOMATIS DENGAN KUNCI AKUN ANDA
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8mHckE_OMI1QorZk7-YRMZTQxHVytWUM",
+            authDomain: "informatika-kelas9.firebaseapp.com",
+            projectId: "informatika-kelas9",
+            storageBucket: "informatika-kelas9.firebasestorage.app",
+            messagingSenderId: "1044163448720",
+            appId: "1:1044163448720:web:087350aa8ed3438f0f2d15",
+            measurementId: "G-MQ5GC7G2EW"
+        };
 
-        let gformList = JSON.parse(localStorage.getItem('gform_list')) || [];
-        let activeGFormId = gformList.length > 0 ? gformList[0].id : null;
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let isTeacherMode = false;
+        let videoList = [];
+        let activeVideoId = null;
+
+        let gformList = [];
+        let activeGFormId = null;
 
         let chartData = [
             { label: 'Januari', value: 45 },
@@ -560,12 +473,33 @@
             initTableData();
             renderCanvasChart();
             renderGrid();
-            renderVideoUI();
-            renderGFormUI();
-            renderTeacherVideoList();
-            renderTeacherGFormList();
-            updateProgress();
+            setupRealtimeSync();
         });
+
+        // REAL-TIME SYNC LISTENERS
+        function setupRealtimeSync() {
+            // Sinkronisasi Video dari Firebase
+            db.ref('videos').on('value', (snapshot) => {
+                const data = snapshot.val();
+                videoList = data ? Object.values(data) : [];
+                if (!activeVideoId || !videoList.find(v => v.id === activeVideoId)) {
+                    activeVideoId = videoList.length > 0 ? videoList[0].id : null;
+                }
+                renderVideoUI();
+                renderTeacherVideoList();
+            });
+
+            // Sinkronisasi Google Form dari Firebase
+            db.ref('gforms').on('value', (snapshot) => {
+                const data = snapshot.val();
+                gformList = data ? Object.values(data) : [];
+                if (!activeGFormId || !gformList.find(f => f.id === activeGFormId)) {
+                    activeGFormId = gformList.length > 0 ? gformList[0].id : null;
+                }
+                renderGFormUI();
+                renderTeacherGFormList();
+            });
+        }
 
         // ROLE TOGGLE
         function toggleRoleMode() {
@@ -631,7 +565,7 @@
             }
         }
 
-        // URL PARSER (YouTube / Google Drive)
+        // URL PARSER
         function parseVideoEmbedUrl(url) {
             if (!url) return '';
             const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
@@ -643,7 +577,7 @@
             return url;
         }
 
-        // MULTI-VIDEO LOGIC
+        // FIREBASE VIDEO OPERATIONS
         function addNewVideoItem() {
             const title = document.getElementById('input-video-title').value.trim();
             const rawUrl = document.getElementById('input-video-url').value.trim();
@@ -653,35 +587,24 @@
                 return;
             }
 
+            const id = Date.now();
             const newItem = {
-                id: Date.now(),
+                id: id,
                 title: title,
                 url: rawUrl,
                 embedUrl: parseVideoEmbedUrl(rawUrl)
             };
 
-            videoList.push(newItem);
-            localStorage.setItem('video_list', JSON.stringify(videoList));
-
-            if (!activeVideoId) activeVideoId = newItem.id;
-
-            document.getElementById('input-video-title').value = '';
-            document.getElementById('input-video-url').value = '';
-
-            renderVideoUI();
-            renderTeacherVideoList();
-            alert('Video berhasil ditambahkan ke daftar!');
+            db.ref('videos/' + id).set(newItem).then(() => {
+                alert('Video berhasil disimpan ke cloud database!');
+                document.getElementById('input-video-title').value = '';
+                document.getElementById('input-video-url').value = '';
+            }).catch(err => alert('Gagal menyimpan: ' + err.message));
         }
 
         function deleteVideoItem(id) {
-            if (confirm('Hapus video ini dari daftar?')) {
-                videoList = videoList.filter(item => item.id !== id);
-                localStorage.setItem('video_list', JSON.stringify(videoList));
-                if (activeVideoId === id) {
-                    activeVideoId = videoList.length > 0 ? videoList[0].id : null;
-                }
-                renderVideoUI();
-                renderTeacherVideoList();
+            if (confirm('Hapus video ini dari database cloud?')) {
+                db.ref('videos/' + id).remove();
             }
         }
 
@@ -713,7 +636,6 @@
             iframe.src = activeVideo.embedUrl;
             displayTitle.innerText = activeVideo.title;
 
-            // Render Playlist
             playlistSection.classList.remove('hidden');
             playlistGrid.innerHTML = '';
             videoList.forEach((item, index) => {
@@ -742,7 +664,7 @@
             container.innerHTML = '';
 
             if (videoList.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada video tersimpan.</p>';
+                container.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada video tersimpan di cloud.</p>';
                 return;
             }
 
@@ -760,7 +682,7 @@
             });
         }
 
-        // MULTI-GOOGLE FORM LOGIC
+        // FIREBASE GFORM OPERATIONS
         function addNewGFormItem() {
             const title = document.getElementById('input-gform-title').value.trim();
             const url = document.getElementById('input-gform-url').value.trim();
@@ -770,29 +692,19 @@
                 return;
             }
 
-            const newItem = { id: Date.now(), title, url };
-            gformList.push(newItem);
-            localStorage.setItem('gform_list', JSON.stringify(gformList));
+            const id = Date.now();
+            const newItem = { id: id, title: title, url: url };
 
-            if (!activeGFormId) activeGFormId = newItem.id;
-
-            document.getElementById('input-gform-title').value = '';
-            document.getElementById('input-gform-url').value = '';
-
-            renderGFormUI();
-            renderTeacherGFormList();
-            alert('Latihan berhasil ditambahkan!');
+            db.ref('gforms/' + id).set(newItem).then(() => {
+                alert('Latihan berhasil disimpan ke cloud database!');
+                document.getElementById('input-gform-title').value = '';
+                document.getElementById('input-gform-url').value = '';
+            }).catch(err => alert('Gagal menyimpan: ' + err.message));
         }
 
         function deleteGFormItem(id) {
-            if (confirm('Hapus latihan ini dari daftar?')) {
-                gformList = gformList.filter(item => item.id !== id);
-                localStorage.setItem('gform_list', JSON.stringify(gformList));
-                if (activeGFormId === id) {
-                    activeGFormId = gformList.length > 0 ? gformList[0].id : null;
-                }
-                renderGFormUI();
-                renderTeacherGFormList();
+            if (confirm('Hapus latihan ini dari database cloud?')) {
+                db.ref('gforms/' + id).remove();
             }
         }
 
@@ -827,7 +739,6 @@
             externalBtn.classList.remove('hidden');
             directUrl.href = activeForm.url;
 
-            // Render Selector Buttons
             selectorContainer.classList.remove('hidden');
             buttonsList.innerHTML = '';
             gformList.forEach((item) => {
@@ -846,7 +757,7 @@
             container.innerHTML = '';
 
             if (gformList.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada latihan tersimpan.</p>';
+                container.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada latihan tersimpan di cloud.</p>';
                 return;
             }
 
@@ -864,7 +775,7 @@
             });
         }
 
-        // SECURITY & DATA RESET
+        // SECURITY PIN MANAGEMENT
         function saveNewPin() {
             const newPin = document.getElementById('input-new-pin').value;
             const confirmPin = document.getElementById('input-confirm-pin').value;
@@ -884,15 +795,7 @@
             document.getElementById('input-confirm-pin').value = '';
         }
 
-        function resetAllData() {
-            if (confirm('Apakah Anda yakin ingin mereset seluruh data lokal?')) {
-                localStorage.clear();
-                alert('Data berhasil di-reset.');
-                location.reload();
-            }
-        }
-
-        // SIMULATORS & CANVAS
+        // SIMULATOR LOGIC
         function initTableData() {
             const tbody = document.getElementById('chart-data-tbody');
             if (!tbody) return;
@@ -917,62 +820,27 @@
             const canvas = document.getElementById('dataChartCanvas');
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
-            const type = document.getElementById('chart-type-select').value;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             if (chartData.length === 0) return;
             const colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
+            const maxVal = Math.max(...chartData.map(d => d.value), 10);
+            const barWidth = 40;
+            const gap = 30;
+            const startX = 50;
 
-            if (type === 'bar') {
-                const maxVal = Math.max(...chartData.map(d => d.value), 10);
-                const barWidth = 40;
-                const gap = 30;
-                const startX = 50;
+            chartData.forEach((item, i) => {
+                const barHeight = (item.value / maxVal) * 180;
+                const x = startX + i * (barWidth + gap);
+                const y = canvas.height - 40 - barHeight;
 
-                chartData.forEach((item, i) => {
-                    const barHeight = (item.value / maxVal) * 180;
-                    const x = startX + i * (barWidth + gap);
-                    const y = canvas.height - 40 - barHeight;
-
-                    ctx.fillStyle = colors[i % colors.length];
-                    ctx.fillRect(x, y, barWidth, barHeight);
-                    ctx.fillStyle = '#334155';
-                    ctx.font = '11px Inter';
-                    ctx.fillText(item.label, x, canvas.height - 20);
-                    ctx.fillText(item.value, x + 10, y - 5);
-                });
-            } else if (type === 'pie') {
-                const total = chartData.reduce((acc, curr) => acc + curr.value, 0) || 1;
-                let startAngle = 0;
-                const centerX = canvas.width / 2;
-                const centerY = canvas.height / 2;
-
-                chartData.forEach((item, i) => {
-                    const sliceAngle = (item.value / total) * 2 * Math.PI;
-                    ctx.beginPath();
-                    ctx.moveTo(centerX, centerY);
-                    ctx.arc(centerX, centerY, 80, startAngle, startAngle + sliceAngle);
-                    ctx.closePath();
-                    ctx.fillStyle = colors[i % colors.length];
-                    ctx.fill();
-                    startAngle += sliceAngle;
-                });
-            } else if (type === 'line') {
-                const maxVal = Math.max(...chartData.map(d => d.value), 10);
-                const gap = (canvas.width - 80) / (chartData.length - 1 || 1);
-
-                ctx.beginPath();
-                ctx.strokeStyle = '#2563eb';
-                ctx.lineWidth = 3;
-
-                chartData.forEach((item, i) => {
-                    const x = 40 + i * gap;
-                    const y = canvas.height - 40 - (item.value / maxVal) * 180;
-                    if (i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                });
-                ctx.stroke();
-            }
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fillRect(x, y, barWidth, barHeight);
+                ctx.fillStyle = '#334155';
+                ctx.font = '11px Inter';
+                ctx.fillText(item.label, x, canvas.height - 20);
+                ctx.fillText(item.value, x + 10, y - 5);
+            });
         }
 
         function renderGrid() {
@@ -1017,15 +885,6 @@
                 res.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-check-circle"></i> TUNTAS (Nilai ${score} >= 75)</span>`;
             } else {
                 res.innerHTML = `<span class="text-red-600 font-bold"><i class="fa-solid fa-circle-xmark"></i> REMEDIAL (Nilai ${score} < 75)</span>`;
-            }
-        }
-
-        function updateProgress() {
-            const pBar = document.getElementById('global-progress-bar');
-            const pText = document.getElementById('global-progress-text');
-            if (pBar && pText) {
-                pBar.style.width = '30%';
-                pText.innerText = '30%';
             }
         }
     </script>
