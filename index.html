@@ -8,9 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Firebase SDK (Compat Version) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    
+    <!-- FIREBASE SDK (COMPAT VERSION) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -43,18 +44,11 @@
 
             <!-- Global Status & Mode Switcher -->
             <div class="flex items-center space-x-4">
-                <div class="hidden lg:flex items-center space-x-2 bg-indigo-950/60 px-3 py-1.5 rounded-full text-xs">
-                    <i class="fa-solid fa-signal text-emerald-400"></i>
-                    <span id="db-status-text" class="text-emerald-400 font-semibold">Tersambung Cloud</span>
-                </div>
-
-                <!-- Mode Indicator Badge -->
                 <div id="mode-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
                     <i class="fa-solid fa-user-graduate"></i>
                     <span id="mode-badge-text">Mode Siswa</span>
                 </div>
 
-                <!-- Mode Switch Button -->
                 <button id="btn-toggle-mode" onclick="toggleRoleMode()" class="bg-indigo-800 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg transition font-medium flex items-center gap-2 border border-indigo-700">
                     <i class="fa-solid fa-right-left"></i>
                     <span class="hidden sm:inline">Ganti Mode</span>
@@ -79,21 +73,6 @@
                     <button onclick="switchTab('modul1')" id="nav-modul1" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent">
                         <i class="fa-solid fa-chart-pie w-5 text-center"></i>
                         <span>1. Analisis Data</span>
-                    </button>
-
-                    <button onclick="switchTab('modul2')" id="nav-modul2" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent">
-                        <i class="fa-solid fa-brain w-5 text-center"></i>
-                        <span>2. Berpikir Komputasional</span>
-                    </button>
-
-                    <button onclick="switchTab('modul3')" id="nav-modul3" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent">
-                        <i class="fa-solid fa-network-wired w-5 text-center"></i>
-                        <span>3. Jaringan & Keamanan</span>
-                    </button>
-
-                    <button onclick="switchTab('modul4')" id="nav-modul4" class="nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 border-l-4 border-transparent">
-                        <i class="fa-solid fa-code w-5 text-center"></i>
-                        <span>4. Pemrograman</span>
                     </button>
 
                     <div class="pt-4 pb-1">
@@ -121,771 +100,413 @@
                     </div>
                 </nav>
             </div>
-
-            <div class="p-4 border-t border-slate-200 bg-slate-50 text-xs text-slate-500">
-                <p class="font-medium text-slate-700">Kurikulum Merdeka 2026</p>
-                <p>Informatika Kelas IX SMP/MTs</p>
-            </div>
         </aside>
 
         <!-- MAIN CONTENT AREA -->
         <main class="flex-1 p-4 sm:p-6 lg:p-8 custom-scrollbar overflow-y-auto">
 
-            <!-- TAB 0: DASHBOARD -->
+            <!-- TAB DASHBOARD -->
             <div id="tab-dashboard" class="tab-content space-y-6">
                 <div class="bg-gradient-to-r from-indigo-800 to-blue-600 rounded-2xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
                     <div class="relative z-10 max-w-2xl">
                         <span class="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full inline-block mb-3 backdrop-blur-sm">Selamat Datang!</span>
                         <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Portal Pembelajaran Informatika Kelas 9</h2>
-                        <p class="mt-2 text-indigo-100 text-sm sm:text-base">Eksplorasi konsep analisis data, berpikir komputasional, jaringan komputer, galeri video, hingga latihan online interaktif.</p>
-                    </div>
-                    <i class="fa-solid fa-laptop-code absolute -right-6 -bottom-6 text-9xl text-white/10 pointer-events-none"></i>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-red-50 border border-red-200 rounded-xl p-5 flex items-center justify-between gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-red-600 text-white rounded-lg flex items-center justify-center text-xl flex-shrink-0">
-                                <i class="fa-solid fa-play"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-slate-800 text-sm">Galeri Video Pembelajaran</h3>
-                                <p class="text-xs text-slate-600">Saksikan kumpulan video tutorial penjelas materi.</p>
-                            </div>
-                        </div>
-                        <button onclick="switchTab('video-learning')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition whitespace-nowrap">
-                            Tonton Video
-                        </button>
-                    </div>
-
-                    <div class="bg-purple-50 border border-purple-200 rounded-xl p-5 flex items-center justify-between gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-purple-600 text-white rounded-lg flex items-center justify-center text-xl flex-shrink-0">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-slate-800 text-sm">Daftar Latihan Online</h3>
-                                <p class="text-xs text-slate-600">Pilih dan kerjakan tugas/kuis dari guru.</p>
-                            </div>
-                        </div>
-                        <button onclick="switchTab('gform-practice')" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition whitespace-nowrap">
-                            Mulai Latihan
-                        </button>
+                        <p class="mt-2 text-indigo-100 text-sm sm:text-base">Materi video pembelajaran dan latihan soal online dapat diakses secara dinamis.</p>
                     </div>
                 </div>
             </div>
 
             <!-- TAB 1: MODUL 1 -->
             <div id="tab-modul1" class="tab-content hidden space-y-6">
-                <div class="border-b border-slate-200 pb-4">
-                    <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Modul Pembelajaran 1</span>
-                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Analisis Data & Visualisasi Diagram</h2>
-                </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800 text-lg">Generator Diagram Interactive</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left border border-slate-200 rounded-lg overflow-hidden">
-                            <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
-                                <tr>
-                                    <th class="p-3">Kategori / Item</th>
-                                    <th class="p-3">Nilai / Jumlah</th>
-                                    <th class="p-3 text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="chart-data-tbody" class="divide-y divide-slate-200"></tbody>
-                        </table>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="addTableRow()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-3 py-2 rounded-lg transition font-medium"><i class="fa-solid fa-plus mr-1"></i> Tambah Baris</button>
-                        <button onclick="renderCanvasChart()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2 rounded-lg transition font-medium"><i class="fa-solid fa-rotate mr-1"></i> Perbarui Diagram</button>
-                    </div>
-                    <div class="pt-4 border-t border-slate-100">
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-center">
-                            <canvas id="dataChartCanvas" width="500" height="280" class="max-w-full h-auto bg-white rounded shadow-sm border border-slate-200"></canvas>
-                        </div>
-                    </div>
-                </div>
+                <h2 class="text-2xl font-bold text-slate-900">Modul 1 - Analisis Data</h2>
+                <p class="text-sm text-slate-600">Materi dasar analisis data terstruktur dan visualisasi chart.</p>
             </div>
 
-            <!-- TAB 2: MODUL 2 -->
-            <div id="tab-modul2" class="tab-content hidden space-y-6">
-                <div class="border-b border-slate-200 pb-4">
-                    <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Modul Pembelajaran 2</span>
-                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Berpikir Komputasional</h2>
-                </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800 text-lg">Simulasi Grid Navigasi Algoritma</h3>
-                    <div class="flex flex-col items-center justify-center p-4 bg-slate-100 rounded-lg">
-                        <div id="grid-container" class="grid grid-cols-4 gap-2 w-64 h-64 bg-white p-2 rounded border border-slate-300"></div>
-                        <div class="flex gap-2 mt-4">
-                            <button onclick="moveRobot('up')" class="bg-slate-700 text-white text-xs px-3 py-1.5 rounded"><i class="fa-solid fa-arrow-up"></i> Atas</button>
-                            <button onclick="moveRobot('down')" class="bg-slate-700 text-white text-xs px-3 py-1.5 rounded"><i class="fa-solid fa-arrow-down"></i> Bawah</button>
-                            <button onclick="moveRobot('left')" class="bg-slate-700 text-white text-xs px-3 py-1.5 rounded"><i class="fa-solid fa-arrow-left"></i> Kiri</button>
-                            <button onclick="moveRobot('right')" class="bg-slate-700 text-white text-xs px-3 py-1.5 rounded"><i class="fa-solid fa-arrow-right"></i> Kanan</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: MODUL 3 -->
-            <div id="tab-modul3" class="tab-content hidden space-y-6">
-                <div class="border-b border-slate-200 pb-4">
-                    <span class="text-xs font-semibold text-purple-600 uppercase tracking-wider">Modul Pembelajaran 3</span>
-                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Jaringan Komputer & Keamanan Data</h2>
-                </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800 text-lg">Simulasi Enkripsi (Caesar Cipher)</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-semibold text-slate-700">Teks Asli (Plaintext):</label>
-                            <input id="cipher-input" type="text" value="INFORMATIKA" oninput="updateCipher()" class="w-full mt-1 border border-slate-300 rounded px-3 py-2 text-sm">
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-slate-700">Hasil Enkripsi (Ciphertext):</label>
-                            <input id="cipher-output" type="text" readonly class="w-full mt-1 bg-slate-100 border border-slate-300 rounded px-3 py-2 text-sm font-mono font-bold text-indigo-600">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 4: MODUL 4 -->
-            <div id="tab-modul4" class="tab-content hidden space-y-6">
-                <div class="border-b border-slate-200 pb-4">
-                    <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Modul Pembelajaran 4</span>
-                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Algoritma & Pemrograman</h2>
-                </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800 text-lg">Simulasi Logika Nilai Siswa (If-Else)</h3>
-                    <div class="flex items-center gap-3">
-                        <input id="score-input" type="number" min="0" max="100" value="78" class="border border-slate-300 rounded px-3 py-1.5 text-sm w-24">
-                        <button onclick="checkScoreLogic()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-4 py-2 rounded">Cek Kelulusan</button>
-                    </div>
-                    <div id="score-result" class="p-3 bg-slate-50 rounded text-sm font-semibold text-slate-700">Hasil: Masukkan nilai.</div>
-                </div>
-            </div>
-
-            <!-- TAB: GALERI VIDEO PEMBELAJARAN -->
+            <!-- TAB: VIDEO PEMBELAJARAN (Siswa View) -->
             <div id="tab-video-learning" class="tab-content hidden space-y-6">
                 <div class="border-b border-slate-200 pb-4">
-                    <span class="text-xs font-semibold text-red-600 uppercase tracking-wider">Galeri Media Pembelajaran Cloud</span>
-                    <h2 id="student-video-active-title" class="text-2xl font-bold text-slate-900 mt-1">Pilih Video Pembelajaran</h2>
+                    <span class="text-xs font-semibold text-red-600 uppercase tracking-wider">Media Pembelajaran Visual</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Daftar Video Tutorial</h2>
+                    <p class="text-sm text-slate-500 mt-1">Pilih video di bawah ini untuk memulai pembelajaran.</p>
                 </div>
 
-                <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <div id="video-frame-container" class="relative w-full pb-[56.25%] h-0 rounded-xl overflow-hidden bg-black hidden shadow-md">
-                        <iframe id="video-iframe" class="absolute top-0 left-0 w-full h-full border-0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                    </div>
-
-                    <div id="video-placeholder" class="text-center p-8 max-w-md mx-auto">
-                        <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
-                            <i class="fa-solid fa-video-slash"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-lg">Belum Ada Video Pembelajaran</h3>
-                        <p class="text-xs text-slate-500 mt-2">
-                            Masuk ke <span class="font-semibold text-amber-700">Mode Pengajar</span> untuk menambahkan tautan video baru dari Youtube/Google Drive.
-                        </p>
-                    </div>
+                <div id="video-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Daftar video akan dirender otomatis via Firebase/JavaScript -->
                 </div>
 
-                <div id="video-playlist-section" class="hidden space-y-3">
-                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                        <i class="fa-solid fa-list-ul text-red-600"></i>
-                        Daftar Putar Video Pembelajaran
-                    </h3>
-                    <div id="video-playlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+                <div id="video-empty-state" class="hidden bg-white p-8 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-video-slash text-4xl text-slate-300 mb-3"></i>
+                    <h3 class="font-bold text-slate-700">Belum Ada Video Pembelajaran</h3>
+                    <p class="text-xs text-slate-500 mt-1">Pengajar belum menambahkan video materi.</p>
                 </div>
             </div>
 
-            <!-- TAB: LATIHAN GOOGLE FORM -->
+            <!-- TAB: LATIHAN GOOGLE FORM (Siswa View) -->
             <div id="tab-gform-practice" class="tab-content hidden space-y-6">
-                <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <span class="text-xs font-semibold text-purple-600 uppercase tracking-wider">Lembar Evaluasi Siswa</span>
-                        <h2 class="text-2xl font-bold text-slate-900 mt-1">Latihan Soal Online</h2>
-                    </div>
-                    <div id="gform-external-link-btn" class="hidden">
-                        <a id="gform-direct-url" href="#" target="_blank" class="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-xs px-4 py-2 rounded-lg font-medium transition whitespace-nowrap">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka di Tab Baru
-                        </a>
-                    </div>
+                <div class="border-b border-slate-200 pb-4">
+                    <span class="text-xs font-semibold text-purple-600 uppercase tracking-wider">Lembar Evaluasi Siswa</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Latihan Soal Online</h2>
+                    <p class="text-sm text-slate-500 mt-1">Pilih tugas/latihan di bawah ini untuk pengerjaan.</p>
                 </div>
 
-                <div id="gform-selector-container" class="hidden bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
-                    <label class="text-xs font-semibold text-slate-600 uppercase tracking-wider">Pilih Tugas / Kuis:</label>
-                    <div id="gform-buttons-list" class="flex flex-wrap gap-2"></div>
+                <div id="gform-list-container" class="space-y-4">
+                    <!-- Daftar Google Form akan dirender otomatis -->
                 </div>
 
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm min-h-[500px] flex flex-col items-center justify-center">
-                    <div id="gform-frame-container" class="w-full h-full min-h-[600px] hidden">
-                        <iframe id="gform-iframe" src="" class="w-full h-[650px] border-0 rounded-lg">Loading...</iframe>
-                    </div>
-
-                    <div id="gform-placeholder" class="text-center p-8 max-w-md">
-                        <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
-                            <i class="fa-solid fa-link-slash"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800 text-lg">Belum Ada Tautan Google Form</h3>
-                        <p class="text-xs text-slate-500 mt-2">
-                            Masuk ke <span class="font-semibold text-amber-700">Mode Pengajar</span> untuk memasukkan tautan Google Form.
-                        </p>
-                    </div>
+                <div id="gform-empty-state" class="hidden bg-white p-8 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-link-slash text-4xl text-slate-300 mb-3"></i>
+                    <h3 class="font-bold text-slate-700">Belum Ada Soal Latihan</h3>
+                    <p class="text-xs text-slate-500 mt-1">Pengajar belum memberikan tautan latihan Google Form.</p>
                 </div>
             </div>
 
             <!-- TAB: PENGATURAN GURU -->
             <div id="tab-teacher-settings" class="tab-content hidden space-y-6">
                 <div class="border-b border-slate-200 pb-4">
-                    <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Panel Pengelola Cloud</span>
-                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Pengaturan & Kelola Pembelajaran</h2>
+                    <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">Panel Pengelola</span>
+                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Pengaturan Guru & Update Konten</h2>
                 </div>
 
-                <!-- MULTI-VIDEO MANAGER -->
+                <!-- 1. FORM TAMBAH VIDEO -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-film text-red-600"></i> Tambah Video Pembelajaran Baru
+                        <i class="fa-solid fa-plus text-red-600"></i> Tambah Video Pembelajaran Baru
                     </h3>
-                    <div class="space-y-3 pt-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Video / Topik:</label>
-                                <input id="input-video-title" type="text" placeholder="Contoh: Bab 1 - Pengenalan Analisis Data" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan URL Video (YouTube / Google Drive):</label>
-                                <input id="input-video-url" type="url" placeholder="Paste link YouTube / Drive di sini" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
-                            </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Video:</label>
+                            <input id="input-video-title" type="text" placeholder="Contoh: Tutorial Analisis Data Bab 1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
                         </div>
-                        <button onclick="addNewVideoItem()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition">
-                            <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Simpan Ke Cloud
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">URL YouTube / Google Drive Video:</label>
+                            <input id="input-video-url" type="url" placeholder="https://www.youtube.com/watch?v=..." class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <button onclick="addVideoItem()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition">
+                            <i class="fa-solid fa-upload mr-1"></i> Publikasikan Video
                         </button>
                     </div>
 
-                    <div class="pt-2">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Daftar Video Aktif di Cloud:</h4>
-                        <div id="teacher-video-list" class="space-y-2"></div>
-                    </div>
+                    <!-- Kelola Video Yang Ada -->
+                    <hr class="my-4">
+                    <h4 class="font-bold text-sm text-slate-700">Daftar Video Yang Sudah Terbit:</h4>
+                    <div id="teacher-video-manager" class="space-y-2"></div>
                 </div>
 
-                <!-- MULTI-GOOGLE FORM MANAGER -->
+                <!-- 2. FORM TAMBAH SOAL GOOGLE FORM -->
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-brands fa-google text-purple-600"></i> Tambah Link Google Form / Latihan
+                        <i class="fa-solid fa-plus text-purple-600"></i> Tambah Soal / Latihan Google Form Baru
                     </h3>
-                    <div class="space-y-3 pt-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Latihan / Kuis:</label>
-                                <input id="input-gform-title" type="text" placeholder="Contoh: Kuis Ulangan Harian Bab 1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan URL Google Form:</label>
-                                <input id="input-gform-url" type="url" placeholder="https://docs.google.com/forms/d/e/.../viewform" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
-                            </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Latihan / Quiz:</label>
+                            <input id="input-gform-title" type="text" placeholder="Contoh: Ulangan Harian Bab 2" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
                         </div>
-                        <button onclick="addNewGFormItem()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-5 py-2.5 rounded-lg transition">
-                            <i class="fa-solid fa-cloud-arrow-up mr-1"></i> Simpan Ke Cloud
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Link Google Form:</label>
+                            <input id="input-gform-url" type="url" placeholder="https://docs.google.com/forms/d/e/.../viewform" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <button onclick="addGFormItem()" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition">
+                            <i class="fa-solid fa-paper-plane mr-1"></i> Publikasikan Soal
                         </button>
                     </div>
 
-                    <div class="pt-2">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Daftar Latihan Aktif di Cloud:</h4>
-                        <div id="teacher-gform-list" class="space-y-2"></div>
-                    </div>
-                </div>
-
-                <!-- SECURITY CONFIG (CHANGE PIN) -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-                    <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        <i class="fa-solid fa-key text-amber-600"></i> Ubah PIN Keamanan Pengajar
-                    </h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                        <div>
-                            <input id="input-new-pin" type="password" placeholder="Masukkan PIN baru" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
-                        </div>
-                        <div>
-                            <input id="input-confirm-pin" type="password" placeholder="Ulangi PIN baru" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
-                        </div>
-                    </div>
-                    <button onclick="saveNewPin()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-5 py-2 rounded-lg transition">
-                        Perbarui PIN Rahasia
-                    </button>
+                    <!-- Kelola Form Yang Ada -->
+                    <hr class="my-4">
+                    <h4 class="font-bold text-sm text-slate-700">Daftar Soal Latihan Terbit:</h4>
+                    <div id="teacher-gform-manager" class="space-y-2"></div>
                 </div>
             </div>
 
         </main>
     </div>
 
-    <!-- PIN MODAL AUTHENTICATION -->
+    <!-- PIN MODAL -->
     <div id="pin-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl border border-slate-100">
-            <div class="text-center space-y-3">
-                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mx-auto">
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                <h3 class="font-bold text-slate-800 text-lg">Verifikasi Mode Pengajar</h3>
-                <p class="text-xs text-slate-500">Masukkan PIN autentikasi rahasia Anda untuk beralih mode.</p>
-            </div>
-
-            <div class="mt-5 space-y-4">
-                <input id="pin-input" type="password" placeholder="••••" maxlength="10" class="w-full text-center text-2xl tracking-widest font-mono border border-slate-300 rounded-xl py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <p id="pin-error-msg" class="text-xs text-red-500 text-center hidden font-medium">PIN tidak sesuai.</p>
-
-                <div class="grid grid-cols-2 gap-2 pt-2">
-                    <button onclick="closePinModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 rounded-xl text-xs transition">Batal</button>
-                    <button onclick="verifyTeacherPin()" class="w-full bg-indigo-800 hover:bg-indigo-900 text-white font-medium py-2.5 rounded-xl text-xs transition">Akses Guru</button>
-                </div>
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl">
+            <h3 class="font-bold text-slate-800 text-lg text-center">Akses Guru</h3>
+            <p class="text-xs text-slate-500 text-center mt-1">Masukkan PIN (Bawaan: 1234)</p>
+            <input id="pin-input" type="password" placeholder="••••" maxlength="10" class="w-full text-center text-2xl tracking-widest border border-slate-300 rounded-xl py-3 my-4">
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="closePinModal()" class="bg-slate-100 text-slate-700 py-2 rounded-xl text-xs">Batal</button>
+                <button onclick="verifyTeacherPin()" class="bg-indigo-800 text-white py-2 rounded-xl text-xs">Masuk</button>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC & FIREBASE INTEGRATION -->
     <script>
-        // KONFIGURASI FIREBASE OTOMATIS DENGAN KUNCI AKUN ANDA
+        // ==========================================
+        // 1. KONFIGURASI FIREBASE ANDA (GANTI DI SINI)
+        // ==========================================
         const firebaseConfig = {
-            apiKey: "AIzaSyC8mHckE_OMI1QorZk7-YRMZTQxHVytWUM",
-            authDomain: "informatika-kelas9.firebaseapp.com",
-            projectId: "informatika-kelas9",
-            storageBucket: "informatika-kelas9.firebasestorage.app",
-            messagingSenderId: "1044163448720",
-            appId: "1:1044163448720:web:087350aa8ed3438f0f2d15",
-            measurementId: "G-MQ5GC7G2EW"
+            apiKey: "AIzaSyCGm2bvJH0gZnZkgFYxzCQ_9vOcGPQEJxQ",
+            authDomain: "informatikawa-3bfba.firebaseapp.com",
+            databaseURL: "https://informatikawa-3bfba-default-rtdb.firebaseio.com",
+            projectId: "informatikawa-3bfba",
+            storageBucket: "informatikawa-3bfba.firebasestorage.app",
+            messagingSenderId: "464515991957",
+            appId: "1:464515991957:web:ef65eb6e28df8aad530e9c"
         };
 
         // Inisialisasi Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        let db = null;
+        try {
+            if (firebaseConfig.apiKey !== "MASUKKAN_API_KEY_ANDA") {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+            }
+        } catch (e) {
+            console.error("Firebase error:", e);
+        }
 
+        // Variable State
         let isTeacherMode = false;
-        let videoList = [];
-        let activeVideoId = null;
-
-        let gformList = [];
-        let activeGFormId = null;
-
-        let chartData = [
-            { label: 'Januari', value: 45 },
-            { label: 'Februari', value: 70 },
-            { label: 'Maret', value: 85 }
-        ];
-        let robotPos = { x: 0, y: 0 };
+        let videoList = {};
+        let gformList = {};
 
         document.addEventListener('DOMContentLoaded', () => {
-            initTableData();
-            renderCanvasChart();
-            renderGrid();
-            setupRealtimeSync();
+            initDatabaseListeners();
         });
 
-        // REAL-TIME SYNC LISTENERS
-        function setupRealtimeSync() {
-            // Sinkronisasi Video dari Firebase
+        // ==========================================
+        // 2. REALTIME DATABASE SYNC
+        // ==========================================
+        function initDatabaseListeners() {
+            if (!db) {
+                // Fallback ke LocalStorage jika Firebase belum diatur
+                loadFromLocalStorage();
+                return;
+            }
+
+            // Sync Data Video dari Server Firebase
             db.ref('videos').on('value', (snapshot) => {
-                const data = snapshot.val();
-                videoList = data ? Object.values(data) : [];
-                if (!activeVideoId || !videoList.find(v => v.id === activeVideoId)) {
-                    activeVideoId = videoList.length > 0 ? videoList[0].id : null;
-                }
-                renderVideoUI();
-                renderTeacherVideoList();
+                videoList = snapshot.val() || {};
+                renderVideos();
             });
 
-            // Sinkronisasi Google Form dari Firebase
+            // Sync Data Google Form dari Server Firebase
             db.ref('gforms').on('value', (snapshot) => {
-                const data = snapshot.val();
-                gformList = data ? Object.values(data) : [];
-                if (!activeGFormId || !gformList.find(f => f.id === activeGFormId)) {
-                    activeGFormId = gformList.length > 0 ? gformList[0].id : null;
-                }
-                renderGFormUI();
-                renderTeacherGFormList();
+                gformList = snapshot.val() || {};
+                renderGForms();
             });
         }
 
-        // ROLE TOGGLE
+        // LocalStorage Fallback (Jika tanpa Firebase)
+        function loadFromLocalStorage() {
+            videoList = JSON.parse(localStorage.getItem('app_videos') || '{}');
+            gformList = JSON.parse(localStorage.getItem('app_gforms') || '{}');
+            renderVideos();
+            renderGForms();
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('app_videos', JSON.stringify(videoList));
+            localStorage.setItem('app_gforms', JSON.stringify(gformList));
+        }
+
+        // ==========================================
+        // 3. LOGIK TAMBAH & HAPUS DATA
+        // ==========================================
+        function parseVideoEmbedUrl(url) {
+            if (!url) return '';
+            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+            if (ytMatch && ytMatch[1]) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+            const gdMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (gdMatch && gdMatch[1]) return `https://drive.google.com/file/d/${gdMatch[1]}/preview`;
+            return url;
+        }
+
+        function addVideoItem() {
+            const title = document.getElementById('input-video-title').value.trim();
+            const rawUrl = document.getElementById('input-video-url').value.trim();
+
+            if (!title || !rawUrl) {
+                alert('Judul dan URL Video wajib diisi!');
+                return;
+            }
+
+            const newId = 'vid_' + Date.now();
+            const videoData = {
+                title: title,
+                embedUrl: parseVideoEmbedUrl(rawUrl),
+                rawUrl: rawUrl
+            };
+
+            if (db) {
+                db.ref('videos/' + newId).set(videoData);
+            } else {
+                videoList[newId] = videoData;
+                saveToLocalStorage();
+                renderVideos();
+            }
+
+            document.getElementById('input-video-title').value = '';
+            document.getElementById('input-video-url').value = '';
+            alert('Video berhasil ditambahkan!');
+        }
+
+        function deleteVideoItem(id) {
+            if (!confirm('Hapus video ini?')) return;
+            if (db) {
+                db.ref('videos/' + id).remove();
+            } else {
+                delete videoList[id];
+                saveToLocalStorage();
+                renderVideos();
+            }
+        }
+
+        function addGFormItem() {
+            const title = document.getElementById('input-gform-title').value.trim();
+            const url = document.getElementById('input-gform-url').value.trim();
+
+            if (!title || !url) {
+                alert('Judul dan Link Google Form wajib diisi!');
+                return;
+            }
+
+            const newId = 'form_' + Date.now();
+            const formData = { title: title, url: url };
+
+            if (db) {
+                db.ref('gforms/' + newId).set(formData);
+            } else {
+                gformList[newId] = formData;
+                saveToLocalStorage();
+                renderGForms();
+            }
+
+            document.getElementById('input-gform-title').value = '';
+            document.getElementById('input-gform-url').value = '';
+            alert('Latihan berhasil ditambahkan!');
+        }
+
+        function deleteGFormItem(id) {
+            if (!confirm('Hapus latihan ini?')) return;
+            if (db) {
+                db.ref('gforms/' + id).remove();
+            } else {
+                delete gformList[id];
+                saveToLocalStorage();
+                renderGForms();
+            }
+        }
+
+        // ==========================================
+        // 4. RENDERING TAMPILAN SISWA & GURU
+        // ==========================================
+        function renderVideos() {
+            const container = document.getElementById('video-list-container');
+            const emptyState = document.getElementById('video-empty-state');
+            const teacherManager = document.getElementById('teacher-video-manager');
+            
+            container.innerHTML = '';
+            teacherManager.innerHTML = '';
+
+            const keys = Object.keys(videoList);
+            if (keys.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                keys.forEach(key => {
+                    const item = videoList[key];
+
+                    // Tampilan Siswa
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden';
+                    card.innerHTML = `
+                        <div class="relative w-full pb-[56.25%] bg-black">
+                            <iframe src="${item.embedUrl}" class="absolute top-0 left-0 w-full h-full border-0" allowfullscreen></iframe>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-slate-800 text-base">${item.title}</h3>
+                        </div>
+                    `;
+                    container.appendChild(card);
+
+                    // Tampilan Pengelola Guru
+                    const mgrRow = document.createElement('div');
+                    mgrRow.className = 'flex items-center justify-between p-2 bg-slate-100 rounded text-xs';
+                    mgrRow.innerHTML = `
+                        <span class="font-semibold text-slate-700">${item.title}</span>
+                        <button onclick="deleteVideoItem('${key}')" class="text-red-600 hover:text-red-800"><i class="fa-solid fa-trash"></i> Hapus</button>
+                    `;
+                    teacherManager.appendChild(mgrRow);
+                });
+            }
+        }
+
+        function renderGForms() {
+            const container = document.getElementById('gform-list-container');
+            const emptyState = document.getElementById('gform-empty-state');
+            const teacherManager = document.getElementById('teacher-gform-manager');
+
+            container.innerHTML = '';
+            teacherManager.innerHTML = '';
+
+            const keys = Object.keys(gformList);
+            if (keys.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                keys.forEach(key => {
+                    const item = gformList[key];
+
+                    // Tampilan Siswa
+                    const card = document.createElement('div');
+                    card.className = 'bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3';
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-800">${item.title}</h3>
+                            <a href="${item.url}" target="_blank" class="bg-purple-600 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1">
+                                <i class="fa-solid fa-external-link"></i> Tab Baru
+                            </a>
+                        </div>
+                        <div class="w-full h-96 rounded-lg overflow-hidden border border-slate-200">
+                            <iframe src="${item.url}" class="w-full h-full border-0">Loading...</iframe>
+                        </div>
+                    `;
+                    container.appendChild(card);
+
+                    // Tampilan Pengelola Guru
+                    const mgrRow = document.createElement('div');
+                    mgrRow.className = 'flex items-center justify-between p-2 bg-slate-100 rounded text-xs';
+                    mgrRow.innerHTML = `
+                        <span class="font-semibold text-slate-700">${item.title}</span>
+                        <button onclick="deleteGFormItem('${key}')" class="text-red-600 hover:text-red-800"><i class="fa-solid fa-trash"></i> Hapus</button>
+                    `;
+                    teacherManager.appendChild(mgrRow);
+                });
+            }
+        }
+
+        // ==========================================
+        // 5. MODAL & NAVIGATION UTILS
+        // ==========================================
         function toggleRoleMode() {
             if (isTeacherMode) {
                 isTeacherMode = false;
                 applyRoleUI();
             } else {
-                document.getElementById('pin-input').value = '';
-                document.getElementById('pin-error-msg').classList.add('hidden');
                 document.getElementById('pin-modal').classList.remove('hidden');
-                document.getElementById('pin-input').focus();
             }
         }
-
-        function closePinModal() {
-            document.getElementById('pin-modal').classList.add('hidden');
-        }
-
+        function closePinModal() { document.getElementById('pin-modal').classList.add('hidden'); }
         function verifyTeacherPin() {
-            const inputPin = document.getElementById('pin-input').value;
-            const savedPin = localStorage.getItem('teacher_pin') || '1234';
-
-            if (inputPin === savedPin) {
+            const pin = document.getElementById('pin-input').value;
+            if (pin === '1234') {
                 isTeacherMode = true;
                 closePinModal();
                 applyRoleUI();
-            } else {
-                document.getElementById('pin-error-msg').classList.remove('hidden');
-            }
+            } else { alert('PIN Salah!'); }
         }
-
         function applyRoleUI() {
-            const modeBadgeText = document.getElementById('mode-badge-text');
-            const modeBadge = document.getElementById('mode-badge');
-            const teacherSection = document.getElementById('teacher-menu-section');
-
-            if (isTeacherMode) {
-                modeBadgeText.innerText = 'Mode Pengajar';
-                modeBadge.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5';
-                teacherSection.classList.remove('hidden');
-            } else {
-                modeBadgeText.innerText = 'Mode Siswa';
-                modeBadge.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5';
-                teacherSection.classList.add('hidden');
-            }
+            document.getElementById('mode-badge-text').innerText = isTeacherMode ? 'Mode Pengajar' : 'Mode Siswa';
+            document.getElementById('teacher-menu-section').classList.toggle('hidden', !isTeacherMode);
         }
-
-        // TAB SWITCHING
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(el => {
-                el.classList.remove('bg-blue-50', 'text-blue-600', 'border-blue-600');
-                el.classList.add('border-transparent', 'text-slate-600');
-            });
-
-            const activeTab = document.getElementById(`tab-${tabId}`);
-            if (activeTab) activeTab.classList.remove('hidden');
-
-            const activeNav = document.getElementById(`nav-${tabId}`);
-            if (activeNav) {
-                activeNav.classList.add('bg-blue-50', 'text-blue-600', 'border-blue-600');
-                activeNav.classList.remove('border-transparent', 'text-slate-600');
-            }
-        }
-
-        // URL PARSER
-        function parseVideoEmbedUrl(url) {
-            if (!url) return '';
-            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-            if (ytMatch && ytMatch[1]) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-
-            const gdMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
-            if (gdMatch && gdMatch[1]) return `https://drive.google.com/file/d/${gdMatch[1]}/preview`;
-
-            return url;
-        }
-
-        // FIREBASE VIDEO OPERATIONS
-        function addNewVideoItem() {
-            const title = document.getElementById('input-video-title').value.trim();
-            const rawUrl = document.getElementById('input-video-url').value.trim();
-
-            if (!title || !rawUrl) {
-                alert('Silakan lengkapi Judul dan URL Video!');
-                return;
-            }
-
-            const id = Date.now();
-            const newItem = {
-                id: id,
-                title: title,
-                url: rawUrl,
-                embedUrl: parseVideoEmbedUrl(rawUrl)
-            };
-
-            db.ref('videos/' + id).set(newItem).then(() => {
-                alert('Video berhasil disimpan ke cloud database!');
-                document.getElementById('input-video-title').value = '';
-                document.getElementById('input-video-url').value = '';
-            }).catch(err => alert('Gagal menyimpan: ' + err.message));
-        }
-
-        function deleteVideoItem(id) {
-            if (confirm('Hapus video ini dari database cloud?')) {
-                db.ref('videos/' + id).remove();
-            }
-        }
-
-        function setActiveVideo(id) {
-            activeVideoId = id;
-            renderVideoUI();
-        }
-
-        function renderVideoUI() {
-            const frameContainer = document.getElementById('video-frame-container');
-            const placeholder = document.getElementById('video-placeholder');
-            const iframe = document.getElementById('video-iframe');
-            const displayTitle = document.getElementById('student-video-active-title');
-            const playlistSection = document.getElementById('video-playlist-section');
-            const playlistGrid = document.getElementById('video-playlist-grid');
-
-            if (videoList.length === 0) {
-                frameContainer.classList.add('hidden');
-                placeholder.classList.remove('hidden');
-                playlistSection.classList.add('hidden');
-                iframe.src = '';
-                displayTitle.innerText = 'Pilih Video Pembelajaran';
-                return;
-            }
-
-            const activeVideo = videoList.find(v => v.id === activeVideoId) || videoList[0];
-            frameContainer.classList.remove('hidden');
-            placeholder.classList.add('hidden');
-            iframe.src = activeVideo.embedUrl;
-            displayTitle.innerText = activeVideo.title;
-
-            playlistSection.classList.remove('hidden');
-            playlistGrid.innerHTML = '';
-            videoList.forEach((item, index) => {
-                const isActive = item.id === activeVideo.id;
-                const card = document.createElement('div');
-                card.onclick = () => setActiveVideo(item.id);
-                card.className = `p-3 rounded-xl border transition cursor-pointer flex items-center justify-between gap-3 ${isActive ? 'bg-red-50 border-red-300 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'}`;
-                card.innerHTML = `
-                    <div class="flex items-center gap-3 overflow-hidden">
-                        <div class="w-8 h-8 rounded-full ${isActive ? 'bg-red-600 text-white' : 'bg-slate-100 text-slate-600'} flex items-center justify-center text-xs font-bold flex-shrink-0">
-                            ${isActive ? '<i class="fa-solid fa-play"></i>' : index + 1}
-                        </div>
-                        <div class="truncate">
-                            <h4 class="text-xs font-bold text-slate-800 truncate">${item.title}</h4>
-                            <p class="text-[10px] text-slate-500">${isActive ? 'Sedang Diputar' : 'Klik untuk memutar'}</p>
-                        </div>
-                    </div>
-                `;
-                playlistGrid.appendChild(card);
-            });
-        }
-
-        function renderTeacherVideoList() {
-            const container = document.getElementById('teacher-video-list');
-            if (!container) return;
-            container.innerHTML = '';
-
-            if (videoList.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada video tersimpan di cloud.</p>';
-                return;
-            }
-
-            videoList.forEach((item, idx) => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center justify-between bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs';
-                div.innerHTML = `
-                    <div class="flex items-center gap-2 truncate pr-2">
-                        <span class="font-bold text-slate-500">${idx + 1}.</span>
-                        <span class="font-semibold text-slate-800 truncate">${item.title}</span>
-                    </div>
-                    <button onclick="deleteVideoItem(${item.id})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // FIREBASE GFORM OPERATIONS
-        function addNewGFormItem() {
-            const title = document.getElementById('input-gform-title').value.trim();
-            const url = document.getElementById('input-gform-url').value.trim();
-
-            if (!title || !url) {
-                alert('Silakan lengkapi Judul dan URL Google Form!');
-                return;
-            }
-
-            const id = Date.now();
-            const newItem = { id: id, title: title, url: url };
-
-            db.ref('gforms/' + id).set(newItem).then(() => {
-                alert('Latihan berhasil disimpan ke cloud database!');
-                document.getElementById('input-gform-title').value = '';
-                document.getElementById('input-gform-url').value = '';
-            }).catch(err => alert('Gagal menyimpan: ' + err.message));
-        }
-
-        function deleteGFormItem(id) {
-            if (confirm('Hapus latihan ini dari database cloud?')) {
-                db.ref('gforms/' + id).remove();
-            }
-        }
-
-        function setActiveGForm(id) {
-            activeGFormId = id;
-            renderGFormUI();
-        }
-
-        function renderGFormUI() {
-            const frameContainer = document.getElementById('gform-frame-container');
-            const placeholder = document.getElementById('gform-placeholder');
-            const iframe = document.getElementById('gform-iframe');
-            const externalBtn = document.getElementById('gform-external-link-btn');
-            const directUrl = document.getElementById('gform-direct-url');
-            const selectorContainer = document.getElementById('gform-selector-container');
-            const buttonsList = document.getElementById('gform-buttons-list');
-
-            if (gformList.length === 0) {
-                frameContainer.classList.add('hidden');
-                placeholder.classList.remove('hidden');
-                externalBtn.classList.add('hidden');
-                selectorContainer.classList.add('hidden');
-                iframe.src = '';
-                return;
-            }
-
-            const activeForm = gformList.find(f => f.id === activeGFormId) || gformList[0];
-            frameContainer.classList.remove('hidden');
-            placeholder.classList.add('hidden');
-            iframe.src = activeForm.url;
-
-            externalBtn.classList.remove('hidden');
-            directUrl.href = activeForm.url;
-
-            selectorContainer.classList.remove('hidden');
-            buttonsList.innerHTML = '';
-            gformList.forEach((item) => {
-                const isActive = item.id === activeForm.id;
-                const btn = document.createElement('button');
-                btn.onclick = () => setActiveGForm(item.id);
-                btn.className = `px-3 py-1.5 rounded-lg text-xs font-semibold transition ${isActive ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`;
-                btn.innerText = item.title;
-                buttonsList.appendChild(btn);
-            });
-        }
-
-        function renderTeacherGFormList() {
-            const container = document.getElementById('teacher-gform-list');
-            if (!container) return;
-            container.innerHTML = '';
-
-            if (gformList.length === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-400 italic">Belum ada latihan tersimpan di cloud.</p>';
-                return;
-            }
-
-            gformList.forEach((item, idx) => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center justify-between bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-xs';
-                div.innerHTML = `
-                    <div class="flex items-center gap-2 truncate pr-2">
-                        <span class="font-bold text-slate-500">${idx + 1}.</span>
-                        <span class="font-semibold text-slate-800 truncate">${item.title}</span>
-                    </div>
-                    <button onclick="deleteGFormItem(${item.id})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // SECURITY PIN MANAGEMENT
-        function saveNewPin() {
-            const newPin = document.getElementById('input-new-pin').value;
-            const confirmPin = document.getElementById('input-confirm-pin').value;
-
-            if (!newPin || newPin.length < 4) {
-                alert('PIN harus minimal 4 karakter!');
-                return;
-            }
-            if (newPin !== confirmPin) {
-                alert('Konfirmasi PIN tidak cocok!');
-                return;
-            }
-
-            localStorage.setItem('teacher_pin', newPin);
-            alert('PIN Keamanan Guru berhasil diperbarui!');
-            document.getElementById('input-new-pin').value = '';
-            document.getElementById('input-confirm-pin').value = '';
-        }
-
-        // SIMULATOR LOGIC
-        function initTableData() {
-            const tbody = document.getElementById('chart-data-tbody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-            chartData.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="p-3"><input type="text" value="${item.label}" onchange="updateRowLabel(${index}, this.value)" class="w-full border rounded px-2 py-1 text-xs"></td>
-                    <td class="p-3"><input type="number" value="${item.value}" onchange="updateRowValue(${index}, this.value)" class="w-full border rounded px-2 py-1 text-xs"></td>
-                    <td class="p-3 text-center"><button onclick="removeTableRow(${index})" class="text-red-500 hover:text-red-700 text-xs"><i class="fa-solid fa-trash"></i></button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function addTableRow() { chartData.push({ label: 'Item Baru', value: 50 }); initTableData(); renderCanvasChart(); }
-        function removeTableRow(i) { chartData.splice(i, 1); initTableData(); renderCanvasChart(); }
-        function updateRowLabel(i, v) { chartData[i].label = v; renderCanvasChart(); }
-        function updateRowValue(i, v) { chartData[i].value = Number(v) || 0; renderCanvasChart(); }
-
-        function renderCanvasChart() {
-            const canvas = document.getElementById('dataChartCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if (chartData.length === 0) return;
-            const colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4'];
-            const maxVal = Math.max(...chartData.map(d => d.value), 10);
-            const barWidth = 40;
-            const gap = 30;
-            const startX = 50;
-
-            chartData.forEach((item, i) => {
-                const barHeight = (item.value / maxVal) * 180;
-                const x = startX + i * (barWidth + gap);
-                const y = canvas.height - 40 - barHeight;
-
-                ctx.fillStyle = colors[i % colors.length];
-                ctx.fillRect(x, y, barWidth, barHeight);
-                ctx.fillStyle = '#334155';
-                ctx.font = '11px Inter';
-                ctx.fillText(item.label, x, canvas.height - 20);
-                ctx.fillText(item.value, x + 10, y - 5);
-            });
-        }
-
-        function renderGrid() {
-            const grid = document.getElementById('grid-container');
-            if (!grid) return;
-            grid.innerHTML = '';
-            for (let r = 0; r < 4; r++) {
-                for (let c = 0; c < 4; c++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'border border-slate-200 rounded flex items-center justify-center text-lg font-bold';
-                    if (robotPos.x === c && robotPos.y === r) {
-                        cell.innerHTML = '🤖';
-                        cell.classList.add('bg-blue-100');
-                    }
-                    grid.appendChild(cell);
-                }
-            }
-        }
-
-        function moveRobot(dir) {
-            if (dir === 'up' && robotPos.y > 0) robotPos.y--;
-            if (dir === 'down' && robotPos.y < 3) robotPos.y++;
-            if (dir === 'left' && robotPos.x > 0) robotPos.x--;
-            if (dir === 'right' && robotPos.x < 3) robotPos.x++;
-            renderGrid();
-        }
-
-        function updateCipher() {
-            const input = document.getElementById('cipher-input').value;
-            let res = '';
-            for (let i = 0; i < input.length; i++) {
-                let code = input.charCodeAt(i);
-                res += String.fromCharCode(code + 3);
-            }
-            document.getElementById('cipher-output').value = res;
-        }
-
-        function checkScoreLogic() {
-            const score = Number(document.getElementById('score-input').value);
-            const res = document.getElementById('score-result');
-            if (score >= 75) {
-                res.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-check-circle"></i> TUNTAS (Nilai ${score} >= 75)</span>`;
-            } else {
-                res.innerHTML = `<span class="text-red-600 font-bold"><i class="fa-solid fa-circle-xmark"></i> REMEDIAL (Nilai ${score} < 75)</span>`;
-            }
+            document.getElementById(`tab-${tabId}`)?.classList.remove('hidden');
         }
     </script>
 </body>
